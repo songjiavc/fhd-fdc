@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<process name="majorRiskResponseMoreSub" xmlns="http://jbpm.org/4.4/jpdl">
+   <on event="start">
+      <event-listener class="com.fhd.ra.web.controller.response.major.listener.MajorRiskReponseMoreSubEventListener"/>
+   </on>
+   <start g="14,229,48,48" name="start1">
+      <transition to="foreach1"/>
+   </start>
+    <foreach g="101,230,48,48" in="#{taskers}" name="foreach1" var="tasker">
+      <transition to="方案制定"/>
+   </foreach>
+   <task assignee="#{tasker.deptCommonEmp}" form="FHD.view.response.major.scheme.MajorRiskSchemeMakeMainPanel" g="204,228,92,52" name="方案制定">
+   	  <description>{rate:{taskRate:40,finishRate:50,parentFinishRate:90}}</description>
+      <transition to="join1"/>
+   </task>
+   <join g="336,229,48,48" multiplicity="#{joinCount}" name="join1">
+      <transition to="部门汇总"/>
+   </join>
+   <task assignee="#{deptRiskManagerForSub}" form="FHD.view.response.major.scheme.deptCollect.DeptCollectMainPanel" g="408,226,92,52" name="部门汇总">
+      <description>{rate:{taskRate:50,finishRate:90}}</description>
+      <transition to="部门主管审批"/>
+   </task>
+   <task assignee="#{directorApproval}" form="FHD.view.response.major.scheme.approve.DeptApproveMainPanel" g="517,220,92,52" name="部门主管审批">
+      <description>{rate:{taskRate:60,finishRate:90}}</description>
+      <transition to="exclusive2"/>
+   </task>
+    <decision g="633,220,48,48" name="exclusive2">
+      <transition g="-17,-15" name="通过" to="部门领导审批">
+      	<condition expr="#{path=='yes'}"/>
+      </transition>
+      <transition g="657,200;452,200:-19,-16" name="驳回" to="部门汇总">
+      	<condition expr="#{path=='no'}"/>
+      </transition>
+   </decision>
+   
+    <task assignee="#{leaderApproval}" form="FHD.view.response.major.scheme.approve.DeptLeaderApproveMainPanel" g="718,218,92,52" name="部门领导审批">
+      <description>{rate:{taskRate:70,finishRate:90}}</description>
+      <transition to="exclusive3"/>
+   </task>
+    <decision g="832,220,48,48" name="exclusive3">
+      <transition g="-13,-13" name="通过" to="分管副总审批">
+      	<condition expr="#{path=='yes'}"/>
+      </transition>
+      <transition g="857,305;564,304:-7,-15" name="驳回" to="部门主管审批">
+      	<condition expr="#{path=='no'}"/>
+      </transition>
+   </decision>
+   <task assignee="#{managerApproval}" form="FHD.view.response.major.scheme.approve.DeptManagerApproveMainPanel" g="916,219,92,52" name="分管副总审批">
+   	  <description>{rate:{taskRate:75,finishRate:90}}</description>
+      <transition to="exclusive4"/>
+   </task>
+  
+   <decision g="1026,226,48,48" name="exclusive4">
+      <transition to="方案审批">
+      	<condition expr="#{path=='yes'}"/>
+      </transition>
+      <transition g="1052,198;764,197:-2,-15" name="驳回" to="部门领导审批">
+      	<condition expr="#{path=='no'}"/>
+      </transition>
+   </decision>
+    <task assignee="#{officeApproval}" form="FHD.view.response.major.scheme.approve.SchemeApproveMainPanel" g="1005,305,92,52" name="方案审批">
+      <description>{rate:{taskRate:80,finishRate:90}}</description>
+      <transition to="exclusive1"/>
+   </task>
+   <decision g="1125,308,48,48" name="exclusive1">
+      <transition g="-5,-22" name="通过" to="end1">
+      	<condition expr="#{path=='yes'}"/>
+      </transition>
+      <transition g="1147,170;703,171;249,170:436,105" name="驳回" to="方案制定">
+        <condition expr="#{path=='no'}"/>
+      </transition>
+   </decision>
+  
+   <end g="1210,310,48,48" name="end1"/>
+   
+  
+   
+</process>

@@ -1,0 +1,7 @@
+[
+	{companyName:'中石油集团',kind:'石油',riskStatus:'<img src=\'images/kpi/cockpit/high.gif\' />'},
+	{companyName:'中石化集团',kind:'石油',riskStatus:'<img src=\'images/kpi/cockpit/mid.gif\' />'},
+	{companyName:'中海油集团',kind:'石油',riskStatus:'<img src=\'images/kpi/cockpit/low.gif\' />'},
+	{companyName:'五矿集团',kind:'贸易',riskStatus:'<img src=\'images/kpi/cockpit/high.gif\' />'},
+	{companyName:'中冶集团',kind:'建筑',riskStatus:'<img src=\'images/kpi/cockpit/high.gif\' />'}
+]

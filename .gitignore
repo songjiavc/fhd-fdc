@@ -1,0 +1,10 @@
+/target/
+/.settings
+/.project
+/.classpath
+.idea/
+/doc/
+/fhd-fdc.iml
+/.svn
+/src/main/webapp/WEB-INF/lib/
+/src/main/webapp/scripts/

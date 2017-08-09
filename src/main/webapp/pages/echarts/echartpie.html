@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>ECharts</title>
+    <!-- 引入 echarts.js -->
+    <script src="js/echarts.min.js"></script>
+</head>
+<body>
+<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+<div id="main" style="width: 1100px;height:450px;"></div>
+<script type="text/javascript">
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('main'));
+
+    // 指定图表的配置项和数据
+    var idx = 1;
+    option = {
+        timeline : {
+            data : [
+                '研制立项', '研制准备与工艺', '样板及数据集管理', '试制前状态检查', '过程质量控制',
+                { name:'产品质量评审', symbol:'diamond', symbolSize:16 },
+                { name:'新机首飞质量控制', symbol:'star6', symbolSize:8 }
+            ],
+            label : {
+                formatter : function(s) {
+                    return s;
+                    //return s.slice(0,7);
+                }
+            },
+            axisType: 'category'
+        },
+        options : [
+            {
+            
+                tooltip : {
+                    trigger: 'item',
+                    formatter: "{a} <br/>{b} : {c} ({d}%)"
+                },
+                legend: {
+                    data:['质量风险','战略风险','法律风险','生产风险','采购风险']
+                },
+                color:['#D8BFD8','#F08080','#87CEFA','#FFA07A','#6495ED','#FFD700'],
+                toolbox: {
+                    show : true,
+                    feature : {
+                        mark : {show: true},
+                        dataView : {show: true, readOnly: false},
+                        magicType : {
+                            show: true,
+                            type: ['pie', 'funnel'],
+                            option: {
+                                funnel: {
+                                    x: '25%',
+                                    width: '50%',
+                                    funnelAlign: 'left',
+                                    max: 1700
+                                }
+                            }
+                        },
+                        restore : {show: true},
+                        saveAsImage : {show: true}
+                    }
+                },
+                series : [
+                    {
+                        name:'风险类别（数据纯属虚构）',
+                        type:'pie',
+                        center: ['50%', '45%'],
+                        radius: '50%',
+                        data:[
+                            {value: idx * 128 + 80,  name:'质量风险'},
+                            {value: idx * 64  + 160,  name:'战略风险'},
+                            {value: idx * 32  + 320,  name:'法律风险'},
+                            {value: idx * 16  + 640,  name:'生产风险'},
+                            {value: idx++ * 8  + 1280, name:'采购风险'}
+                        ]
+                    }
+                ]
+            },
+            {
+                series : [
+                    {
+                        name:'风险类别（数据纯属虚构）',
+                        type:'pie',
+                        data:[
+                            {value: idx * 128 + 80,  name:'质量风险'},
+                            {value: idx * 64  + 160,  name:'战略风险'},
+                            {value: idx * 32  + 320,  name:'法律风险'},
+                            {value: idx * 16  + 640,  name:'生产风险'},
+                            {value: idx++ * 8  + 1280, name:'采购风险'}
+                        ]
+                    }
+                ]
+            },
+            {
+                series : [
+                    {
+                        name:'风险类别（数据纯属虚构）',
+                        type:'pie',
+                        data:[
+                            {value: idx * 128 + 80,  name:'质量风险'},
+                            {value: idx * 64  + 160,  name:'战略风险'},
+                            {value: idx * 32  + 320,  name:'法律风险'},
+                            {value: idx * 16  + 640,  name:'生产风险'},
+                            {value: idx++ * 8  + 1280, name:'采购风险'}
+                        ]
+                    }
+                ]
+            },
+            {
+                series : [
+                    {
+                        name:'风险类别（数据纯属虚构）',
+                        type:'pie',
+                        data:[
+                            {value: idx * 128 + 80,  name:'质量风险'},
+                            {value: idx * 64  + 160,  name:'战略风险'},
+                            {value: idx * 32  + 320,  name:'法律风险'},
+                            {value: idx * 16  + 640,  name:'生产风险'},
+                            {value: idx++ * 8  + 1280, name:'采购风险'}
+                        ]
+                    }
+                ]
+            },
+            {
+                series : [
+                    {
+                        name:'风险类别（数据纯属虚构）',
+                        type:'pie',
+                        data:[
+                            {value: idx * 128 + 80,  name:'质量风险'},
+                            {value: idx * 64  + 160,  name:'战略风险'},
+                            {value: idx * 32  + 320,  name:'法律风险'},
+                            {value: idx * 16  + 640,  name:'生产风险'},
+                            {value: idx++ * 8  + 1280, name:'采购风险'}
+                        ]
+                    }
+                ]
+            },
+            {
+                series : [
+                    {
+                        name:'风险类别（数据纯属虚构）',
+                        type:'pie',
+                        data:[
+                            {value: idx * 128 + 80,  name:'质量风险'},
+                            {value: idx * 64  + 160,  name:'战略风险'},
+                            {value: idx * 32  + 320,  name:'法律风险'},
+                            {value: idx * 16  + 640,  name:'生产风险'},
+                            {value: idx++ * 8  + 1280, name:'采购风险'}
+                        ]
+                    }
+                ]
+            },
+            {
+                series : [
+                    {
+                        name:'风险类别（数据纯属虚构）',
+                        type:'pie',
+                        data:[
+                            {value: idx * 128 + 80,  name:'质量风险'},
+                            {value: idx * 64  + 160,  name:'战略风险'},
+                            {value: idx * 32  + 320,  name:'法律风险'},
+                            {value: idx * 16  + 640,  name:'生产风险'},
+                            {value: idx++ * 8  + 1280, name:'采购风险'}
+                        ]
+                    }
+                ]
+            },
+            {
+                series : [
+                    {
+                        name:'风险类别（数据纯属虚构）',
+                        type:'pie',
+                        data:[
+                            {value: idx * 128 + 80,  name:'质量风险'},
+                            {value: idx * 64  + 160,  name:'战略风险'},
+                            {value: idx * 32  + 320,  name:'法律风险'},
+                            {value: idx * 16  + 640,  name:'生产风险'},
+                            {value: idx++ * 8  + 1280, name:'采购风险'}
+                        ]
+                    }
+                ]
+            },
+            {
+                series : [
+                    {
+                        name:'风险类别（数据纯属虚构）',
+                        type:'pie',
+                        data:[
+                            {value: idx * 128 + 80,  name:'质量风险'},
+                            {value: idx * 64  + 160,  name:'战略风险'},
+                            {value: idx * 32  + 320,  name:'法律风险'},
+                            {value: idx * 16  + 640,  name:'生产风险'},
+                            {value: idx++ * 8  + 1280, name:'采购风险'}
+                        ]
+                    }
+                ]
+            },
+            {
+                series : [
+                    {
+                        name:'风险类别（数据纯属虚构）',
+                        type:'pie',
+                        data:[
+                            {value: idx * 128 + 80,  name:'质量风险'},
+                            {value: idx * 64  + 160,  name:'战略风险'},
+                            {value: idx * 32  + 320,  name:'法律风险'},
+                            {value: idx * 16  + 640,  name:'生产风险'},
+                            {value: idx++ * 8  + 1280, name:'采购风险'}
+                        ]
+                    }
+                ]
+            },
+            {
+                series : [
+                    {
+                        name:'风险类别（数据纯属虚构）',
+                        type:'pie',
+                        data:[
+                            {value: idx * 128 + 80,  name:'质量风险'},
+                            {value: idx * 64  + 160,  name:'战略风险'},
+                            {value: idx * 32  + 320,  name:'法律风险'},
+                            {value: idx * 16  + 640,  name:'生产风险'},
+                            {value: idx++ * 8  + 1280, name:'采购风险'}
+                        ]
+                    }
+                ]
+            },
+            {
+                series : [
+                    {
+                        name:'风险类别（数据纯属虚构）',
+                        type:'pie',
+                        data:[
+                            {value: idx * 128 + 80,  name:'质量风险'},
+                            {value: idx * 64  + 160,  name:'战略风险'},
+                            {value: idx * 32  + 320,  name:'法律风险'},
+                            {value: idx * 16  + 640,  name:'生产风险'},
+                            {value: idx++ * 8  + 1280, name:'采购风险'}
+                        ]
+                    }
+                ]
+            }
+        ]
+    };
+
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+</script>
+</body>
+</html>

@@ -1,0 +1,115 @@
+#导入流程
+select * from t_ic_processure;-- 115
+select * from t_ic_processure where COMPANY_ID='BJ';
+select * from t_ic_processure_rela_org; -- 472
+select * from t_ic_processure_rela_org where PROCESSURE_ID in(select id from t_ic_processure where COMPANY_ID='BJ');
+#导入流程节点
+select * from t_ic_control_point; -- 311
+select * from t_ic_control_point where PROCESSURE_ID in(select id from t_ic_processure where COMPANY_ID='BJ');
+select * from t_ic_control_point_rela_org; -- 622
+select * from t_ic_control_point_rela_org where CONTROL_POINT_ID in(
+	select id from t_ic_control_point where PROCESSURE_ID in(select id from t_ic_processure where COMPANY_ID='BJ')
+);
+#导入流程结点关系
+select * from t_ic_control_point_relevance; -- 193
+select * from t_ic_control_point_relevance where PROCESSURE_ID in(select id from t_ic_processure where COMPANY_ID='BJ');
+
+
+
+
+#导入内控标准(要求)
+select * from t_ic_control_standard;-- 16
+select * from t_ic_control_standard where COMPANY_ID='BJ';
+select * from t_ic_standard_rela_org; -- 15
+select * from t_ic_standard_rela_org where CONTROL_STANDARD_ID in(select id from t_ic_control_standard where COMPANY_ID='BJ');
+#导入流程--内控标准(要求)--风险
+select * from t_ic_standard_rela_processure; -- 5
+select * from t_ic_standard_rela_processure where PROCESSURE_ID in(select id from t_ic_processure where COMPANY_ID='BJ');
+select * from t_ic_standard_rela_risk; -- 0
+select * from t_ic_standard_rela_risk where STANDARD_ID in(select id from t_ic_control_standard where COMPANY_ID='BJ');
+select * from t_processure_risk_processure; -- 122
+select * from t_processure_risk_processure where PROCESSURE_ID in(select id from t_ic_processure where COMPANY_ID='BJ');
+
+
+
+
+
+#导入控制措施
+SELECT * from t_con_control_measure; -- 250
+SELECT * from t_con_control_measure where COMPANY_ID='BJ';
+select * from t_con_measure_rela_org; -- 1821
+select * from t_con_measure_rela_org where CONTROL_MEASURE_ID in(select id from t_con_control_measure where COMPANY_ID='BJ');
+#导入风险--流程--流程节点--控制措施
+select * from t_processure_risk_processure; -- 122
+select * from t_processure_risk_processure where PROCESSURE_ID in(
+	select id from t_ic_processure where COMPANY_ID='BJ'
+);
+select * from t_ic_control_point_rela_risk; -- 302
+select * from t_ic_control_point_rela_risk where CONTROL_POINT_ID in(
+	select id from t_ic_control_point where PROCESSURE_ID in(select id from t_ic_processure where COMPANY_ID='BJ')
+);
+select * from t_con_measure_rela_risk; -- 243
+select * from t_con_measure_rela_risk where CONTROL_MEASURE_ID in(
+	SELECT id from t_con_control_measure where COMPANY_ID='BJ'
+);
+
+
+
+
+
+select * from t_ic_measure_rela_processure; -- 369
+select * from t_ic_measure_rela_processure where PROCESSURE_ID in(
+	select id from t_ic_processure where COMPANY_ID='BJ'
+);
+select * from t_ic_measure_rela_control_poin; -- 416
+select * from t_ic_measure_rela_control_poin where CONTROL_MEASURE_ID in(
+	SELECT id from t_con_control_measure where COMPANY_ID='BJ'
+);
+#导入穿行测试评价点和抽样测试评价点
+select * from t_ca_assessment_point; -- 552
+select * from t_ca_assessment_point where PROCESSURE_ID in(
+	select id from t_ic_processure where COMPANY_ID='BJ'
+) ORDER BY ETYPE;
+-------------------------------------------------------------------------------------------------------------------------------
+#清理穿行测试评价点和抽样测试评价点
+delete from t_ca_assessment_point where PROCESSURE_ID in(
+	select id from t_ic_processure where COMPANY_ID='BJ'
+);
+#清理导入风险--流程--流程节点--控制措施数据
+delete from t_processure_risk_processure where PROCESSURE_ID in(
+	select id from t_ic_processure where COMPANY_ID='BJ'
+);
+delete from t_ic_control_point_rela_risk where CONTROL_POINT_ID in(
+	select id from t_ic_control_point where PROCESSURE_ID in(select id from t_ic_processure where COMPANY_ID='BJ')
+);
+delete from t_con_measure_rela_risk where CONTROL_MEASURE_ID in(
+	SELECT id from t_con_control_measure where COMPANY_ID='BJ'
+);
+delete from t_ic_measure_rela_processure where PROCESSURE_ID in(
+	select id from t_ic_processure where COMPANY_ID='BJ'
+);
+delete from t_ic_measure_rela_control_poin where CONTROL_MEASURE_ID in(
+	SELECT id from t_con_control_measure where COMPANY_ID='BJ'
+);
+#清理控制措施数据
+delete from t_con_measure_rela_org where CONTROL_MEASURE_ID in(
+	select id from t_con_control_measure where COMPANY_ID='BJ'
+);
+delete from t_con_control_measure where COMPANY_ID='BJ';
+#清理导入的流程--内控标准(要求)--风险数据
+delete from t_ic_standard_rela_processure where PROCESSURE_ID in(select id from t_ic_processure where COMPANY_ID='BJ');
+delete from t_ic_standard_rela_risk where STANDARD_ID in(select id from t_ic_control_standard where COMPANY_ID='BJ');
+delete from t_processure_risk_processure where PROCESSURE_ID in(select id from t_ic_processure where COMPANY_ID='BJ');
+#清理导入的内控标准(要求)数据
+delete from t_ic_standard_rela_org where control_standard_id in(select id from t_ic_control_standard where COMPANY_ID='BJ');
+delete from t_ic_control_standard where COMPANY_ID='BJ';
+#清理导入的流程节点关系数据
+delete from t_ic_control_point_relevance where PROCESSURE_ID in(select id from t_ic_processure where COMPANY_ID='BJ');
+#清理导入的流程节点数据
+delete from t_ic_control_point_rela_org where CONTROL_POINT_ID in(
+	select id from t_ic_control_point where PROCESSURE_ID in(select id from t_ic_processure where COMPANY_ID='BJ')
+);
+delete from t_ic_control_point where PROCESSURE_ID in(select id from t_ic_processure where COMPANY_ID='BJ');
+#清理导入的流程数据
+delete from t_ic_processure_rela_org where PROCESSURE_ID in(select id from t_ic_processure where COMPANY_ID='BJ');
+delete from t_ic_processure where COMPANY_ID='BJ';

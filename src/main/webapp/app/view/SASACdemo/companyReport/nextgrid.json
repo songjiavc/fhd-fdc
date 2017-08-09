@@ -1,0 +1,12 @@
+[
+	{riskName:'投资风险',riskStatus:'<img src=\'images/kpi/cockpit/mid.gif\' />'},
+	{riskName:'健康安全环保风险',riskStatus:'<img src=\'images/kpi/cockpit/high.gif\' />'},
+	{riskName:'现金流风险',riskStatus:'<img src=\'images/kpi/cockpit/high.gif\' />'},
+	{riskName:'人力资源风险',riskStatus:'<img src=\'images/kpi/cockpit/low.gif\' />'},
+	{riskName:'政策风险',riskStatus:'<img src=\'images/kpi/cockpit/mid.gif\' />'},
+	{riskName:'竞争风险',riskStatus:'<img src=\'images/kpi/cockpit/high.gif\' />'},
+	{riskName:'战略管理风险',riskStatus:'<img src=\'images/kpi/cockpit/mid.gif\' />'},
+	{riskName:'价格风险',riskStatus:'<img src=\'images/kpi/cockpit/mid.gif\' />'},
+	{riskName:'国际化经营风险',riskStatus:'<img src=\'images/kpi/cockpit/high.gif\' />'},
+	{riskName:'宏观经济风险',riskStatus:'<img src=\'images/kpi/cockpit/mid.gif\' />'}
+]

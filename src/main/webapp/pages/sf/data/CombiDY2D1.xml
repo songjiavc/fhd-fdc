@@ -1,0 +1,57 @@
+<chart caption='2013年  EVA (万元)' showValues='0' bgcolor="FFFFFF" canvasBorderColor="06b8fa"  decimals='3' setAdaptiveYMin='1' setAdaptiveSYMin='1' lineThickness='5'>
+	<categories>
+		<category name='01月' />
+		<category name='02月' />
+		<category name='03月' />
+		<category name='04月' />
+		<category name='05月' />
+		<category name='07月' />
+		<category name='08月' />
+		<category name='09月' />
+		<category name='10月' />
+		<category name='11月' />
+		<category name='12月' />
+	</categories>
+
+	<dataset seriesname='EVA'>
+		<set value='-9895' color="f9f1a0"/>
+		<set value='-14585' color="f9f1a0"/>
+		<set value='-20898' color="f9f1a0"/>
+		<set value='-31527' color="f9f1a0"/>
+		<set value='-38426' color="f9f1a0"/>
+		<set value='-42781' color="eea191"/>
+		<set value='-48966' color="eea191"/>
+		<set value='-54060' color="eea191"/>
+		<set value='-57343' color="eea191"/>
+		<set value='-61838' color="eea191"/>
+		<set value='25000' color="59eb36"/>
+	</dataset>
+
+	<dataset parentYAxis='S' seriesname='收入比率' color='8bba00'>
+		<set value='2.12'/>
+		<set value='2.16'/>
+		<set value='2.12'/>
+		<set value='2.16'/>
+		<set value='2.20'/>
+		<set value='2.14'/>
+		<set value='2.28'/>
+		<set value='2.22'/>
+		<set value='2.23'/>
+		<set value='2.244'/>
+		<set value='4.614'/>
+	</dataset>
+
+	<dataset parentYAxis='S' seriesname='成本比率' color='f6bd0f'>
+		<set value='1.87'/>
+		<set value='1.86'/>
+		<set value='1.85'/>
+		<set value='1.844'/>
+		<set value='1.834'/>
+		<set value='1.825'/>
+		<set value='1.814'/>
+		<set value='1.820'/>
+		<set value='1.020'/>
+		<set value='0.820'/>
+		<set value='0.420'/>
+	</dataset>
+</chart>

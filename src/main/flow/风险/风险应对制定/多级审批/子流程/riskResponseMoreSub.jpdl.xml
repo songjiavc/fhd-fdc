@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<process name="riskResponseSub" xmlns="http://jbpm.org/4.4/jpdl">
+   <on event="start">
+      <event-listener class="com.fhd.ra.business.assess.formulateplan.ResponsePlanEmpEventListener"/>
+   </on>
+   
+  <description>responseMore</description>
+   <start g="82,42,46,46" name="start1">
+      	<transition to="方案制定foreach"/> 
+   </start>
+   <foreach g="210,41,48,48" in="#{riskTaskEvaluators}" name="方案制定foreach" var="riskTaskEvaluator">
+      	<transition to="方案制定"/>
+   </foreach>
+   <!-- 方案制定 -->
+   <task assignee="#{riskTaskEvaluator.riskTaskEvaluatorId}" form="FHD.view.response.bpm.MakeSolutionPlanFormForBpm" g="330,40,200,50" name="方案制定">
+   	  	<description>{rate:{taskRate:40,finishRate:60,parentFinishRate:100}}</description>
+      	<transition to="join2"/>
+   </task>
+   <join g="619,40,48,48" multiplicity="#{joinCount}" name="join2">
+      <transition to="方案审批"/>
+   </join>
+   <!-- 方案审阅 -->
+   <task assignee="#{approvePerson}" form="FHD.view.response.bpm.MakeSolutionPlanFormForBpmApprove" g="819,39,200,50" name="方案审批">
+		<description>{rate:{taskRate:60,finishRate:100}}</description>
+      	<transition to="单位主管审批"/>
+   </task>
+   
+   <!-- 单位主管审批 -->
+   <task assignee="#{deptLeaderId}" form="FHD.view.response.responsplanemore.ResponsePlanApproveSupervisorMain" g="820,242,200,50" name="单位主管审批">
+      <description>{rate:{taskRate:70,finishRate:100}}</description>
+      <transition to="单位主管审批decision"/>
+   </task>
+   <decision g="896,350,48,48" name="单位主管审批decision">
+      	<transition g="625,373:" to="单位领导审批">
+			<condition expr="#{path=='yes'}"/>
+		</transition>
+		<transition g="1124,375;1120,61:" to="方案审批">
+			<condition expr="#{path=='no'}"/>
+		</transition>
+   </decision>
+   <!-- 单位领导审批 -->
+   <task assignee="#{approveLeader}" form="FHD.view.response.responsplanemore.ResponsePlanApproverTwoMain" g="526,236,200,50" name="单位领导审批">
+      <description>{rate:{taskRate:80,finishRate:100}}</description>
+      <transition to="单位领导审批decision"/>
+   </task>
+   <decision g="602,135,48,48" name="单位领导审批decision">
+      	<transition g="340,159:" to="业务分管副总审批">
+			<condition expr="#{path=='yes'}"/>
+		</transition>
+      	<transition g="776,160;776,265:" to="单位主管审批">
+			<condition expr="#{path=='no'}"/>
+		</transition>
+   </decision>
+   <!-- 业务分管副总审批 -->
+   <task assignee="#{approveManager}" form="FHD.view.response.responsplanemore.ResponsePlanApproveManagerMain" g="240,237,200,50" name="业务分管副总审批">
+      <description>{rate:{taskRate:90,finishRate:100}}</description>
+      <transition to="业务分管副总审批decision"/>
+   </task>
+   <decision g="315,347,48,48" name="业务分管副总审批decision">
+      	<transition g="105,369:" to="end1">
+			<condition expr="#{path=='yes'}"/>
+		</transition>
+      	<transition g="481,372;482,259:" to="单位领导审批">
+			<condition expr="#{path=='no'}"/>
+		</transition>
+   </decision>
+   <end g="82,239,48,59" name="end1"/>
+</process>

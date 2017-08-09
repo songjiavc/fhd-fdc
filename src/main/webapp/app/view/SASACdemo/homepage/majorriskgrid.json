@@ -1,0 +1,8 @@
+[
+	{id:'1',riskName:'投资风险'},
+	{id:'2',riskName:'健康安全环保风险'},
+	{id:'3',riskName:'现金流风险'},
+	{id:'4',riskName:'人力资源风险'},
+	{id:'5',riskName:'政策风险'}
+	
+]

@@ -1,0 +1,84 @@
+{
+	"success" : true,
+	"datas" : [{
+		id : "3101579f-a3d1-4abf-8218-7b6218b77a5f",
+		orgId : "XD0203",
+		orgName : "企划处",
+		riskName : "风险1",
+		parentName : "战略风险",
+		riskLevel : "红",
+		updateDate:'2013-07-12'
+	}, {
+		id : "90cc6386-de63-4cf1-9293-26544e031de2",
+		orgId : "XD0205",
+		orgName : "审计处",
+		riskName : "风险2",
+		parentName : "战略风险",
+		riskLevel : "黄",
+		updateDate:'2013-07-12'
+	}, {
+		id : "d2871600-5150-4779-9627-770c0ece2cb7",
+		orgId : "XD0202",
+		orgName : "技术管理处",
+		riskName : "风险3",
+		parentName : "市场风险",
+		riskLevel : "黄",
+		updateDate:'2013-07-12'
+	}, {
+		id : "867826c6-b057-45be-8e4e-aa49cfa1b798",
+		orgId : "XD0202",
+		orgName : "技术管理处",
+		riskName : "风险4",
+		parentName : "市场风险",
+		riskLevel : "绿",
+		updateDate:'2013-07-12'
+	}, {
+		id : "7c97d49b-66bb-465e-838b-660c5a5fc26b",
+		orgId : "XD0202",
+		orgName : "技术管理处",
+		riskName : "风险5",
+		parentName : "法律风险",
+		riskLevel : "红",
+		updateDate:'2013-07-12'
+	}, {
+		id : "cff0d77e-a441-4f6a-93e2-48fb7cf24093",
+		orgId : "XD0202",
+		orgName : "财务处",
+		riskName : "风险6",
+		parentName : "市场风险",
+		riskLevel : "绿",
+		updateDate:'2013-07-12'
+	}, {
+		id : "441c9f04-c09f-4a53-9c0b-7f46fe34e9a1",
+		orgId : "XD0202",
+		orgName : "财务处",
+		riskName : "风险7",
+		parentName : "财务风险",
+		riskLevel : "红",
+		updateDate:'2013-07-12'
+	}, {
+		id : "332f6059-5f76-4e4a-8f91-eddc6a9deca6",
+		orgId : "XD0202",
+		orgName : "财务处",
+		riskName : "风险8",
+		parentName : "财务风险",
+		riskLevel : "黄",
+		updateDate:'2013-07-12'
+	}, {
+		id : "591a5702-7fd8-4c4a-a498-76f8503df2b9",
+		orgId : "XD0202",
+		orgName : "企划处",
+		riskName : "风险9",
+		parentName : "运营风险",
+		riskLevel : "绿",
+		updateDate:'2013-07-12'
+	}, {
+		id : "27ff2590-7e82-4687-9931-737e062a645a",
+		orgId : "XD0202",
+		orgName : "审计处",
+		riskName : "风险10",
+		parentName : "运营风险",
+		riskLevel : "绿",
+		updateDate:'2013-07-12'
+	}]
+}

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<process name="riskDataAdd" xmlns="http://jbpm.org/4.4/jpdl">
+   <description>riskWorkFlow</description>
+   <start g="282,2,48,48" name="start1">
+      <transition to="部门领导风险审批"/>
+   </start>
+   <task assignee="#{RiskAddApproverEmpId}" form="FHD.view.risk.riskDataAddFlow.RiskAddApproval" g="200,100,208,52" name="部门领导风险审批">
+      <description>{rate:{taskRate:50}}</description>
+      <transition to="部门领导风险审批decision"/>
+   </task>
+   <decision g="275,250,48,48" name="部门领导风险审批decision">
+      <transition g="583,254;581,98:" to="部门领导风险审批">
+			<condition expr="#{path=='no'}"/>
+		</transition>
+      <transition g="-165,-92" name="to 归档风险" to="归档风险">
+			<condition expr="#{path=='yes'}"/>
+		</transition>
+   </decision>
+   
+   
+   <task assignee="#{RiskAddManagerApproverEmpId}" form="FHD.view.risk.riskDataAddFlow.RiskAddManagerApproval" g="200,300,208,52" name="归档风险">
+      <description>{rate:{taskRate:80}}</description>
+      <transition to="end1"/>
+   </task>
+
+   <end g="74,350,48,48" name="end1"/>
+</process>

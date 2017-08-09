@@ -1,0 +1,18 @@
+[ {
+	"id" : "report_template",
+	"text" : "报告模板",
+	"cls" : "org",
+	"leaf" : false,
+	"expanded" : true,
+	"children" : [ {
+		"id" : "risk_manage_report_template",
+		"text" : "风险管理报告模板",
+		"cls" : "org",
+		"leaf" : true
+	},{
+		"id" : "risk_assess_report_template",
+		"text" : "风险评估报告模板",
+		"cls" : "org",
+		"leaf" : true
+	}]
+}]

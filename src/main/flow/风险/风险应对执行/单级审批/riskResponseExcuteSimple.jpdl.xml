@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<process name="riskResponseExcute" xmlns="http://jbpm.org/4.4/jpdl">
+	<description>riskResponseExcuteSimple</description>
+	<start g="382,13,46,46" name="start1">
+      	<transition to="发起执行"/>
+	</start>
+	<task assignee="#{startExecuteEmpId}" g="305,149,200,50" name="发起执行">
+		<description>{rate:{taskRate:10}}</description>
+		<transition to="应对执行"/>
+	</task>
+	<!-- 应对执行 -->
+	<task assignee="#{solutionExecuteEmpId}" form="FHD.view.response.responsplanemore.excute.SolutionExcuteMain" g="306,293,200,50" name="应对执行">
+      <description>{rate:{taskRate:50}}</description>
+      <transition to="end1"/>
+	</task>
+   	<end g="384,448,46,46" name="end1"/>
+</process>

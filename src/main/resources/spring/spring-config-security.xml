@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns:sec="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
+				http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.xsd">
+
+	<sec:http realm="fhd" use-expressions="true" entry-point-ref="authenticationProcessingFilterEntryPoint">
+		<sec:intercept-url pattern="/login.do*" filters="none" />
+		<sec:intercept-url pattern="/sso/ssoLogin.do*" filters="none" />
+
+		<sec:intercept-url pattern="/cxfservices/*" filters="none" />
+		<sec:intercept-url pattern="/mobile/*" filters="none" />
+		<sec:intercept-url pattern="/sessiontimeout.do*" filters="none" />
+		<sec:intercept-url pattern="/tmp/attached/GoogleChromeframeStandaloneEnterprise.msi*" filters="none" />
+		<sec:intercept-url pattern="/activitiDeploy.do*" filters="none" />
+		
+		<!-- <sec:intercept-url pattern="/**/chart*" filters="none" /> -->
+		
+		<sec:intercept-url pattern="/**/*.swf*" filters="none" />
+		<sec:intercept-url pattern="/**/*.jpg*" filters="none" />
+		<sec:intercept-url pattern="/**/*.css*" filters="none" />
+		<sec:intercept-url pattern="/**/*.png*" filters="none" />
+		<sec:intercept-url pattern="/**/*.gif*" filters="none" />
+		<sec:intercept-url pattern="/**/*.js*" filters="none" />
+		<sec:intercept-url pattern="/**/*.gzjs*" filters="none" />
+		
+		<sec:intercept-url pattern="/**/*.jsp*" access="hasRole('ROLE_USER')" />
+		<sec:intercept-url pattern="/**/*.do*" access="hasRole('ROLE_USER')" />
+		<sec:intercept-url pattern="/**" access="hasRole('ROLE_USER')" />
+		
+		<!--<sec:http-basic/>
+		<sec:form-login login-page="/login.do"
+			authentication-failure-url="/login.do?login_error=1" always-use-default-target="true" default-target-url="/index.do" />-->
+		<sec:logout logout-success-url="/index.do" />
+		<sec:custom-filter ref="validateMacAuthenticationFilter" position="FORM_LOGIN_FILTER"  />
+		<sec:session-management invalid-session-url="/sessiontimeout.do" ></sec:session-management>
+		<!-- <concurrent-session-control max-sessions="2" exception-if-maximum-exceeded="true"/> -->
+		<sec:remember-me />
+	</sec:http>
+
+	<beans:bean id="validateMacAuthenticationFilter"
+		class="com.fhd.fdc.commons.security.ValidateMacUsernamePasswordAuthenticationFilter">
+		<beans:property name="authenticationSuccessHandler"
+			ref="loginLogAuthenticationSuccessHandler"></beans:property>
+		<beans:property name="authenticationFailureHandler"
+			ref="simpleUrlAuthenticationFailureHandler"></beans:property>
+		<beans:property name="authenticationManager" ref="authenticationManager"></beans:property>
+	</beans:bean>
+	<beans:bean id="loginLogAuthenticationSuccessHandler"
+		class="com.fhd.fdc.commons.security.LoginSuccessHandler">
+		<beans:property name="defaultTargetUrl" value="/index.do"></beans:property>
+	</beans:bean>
+	<beans:bean id="simpleUrlAuthenticationFailureHandler"
+		class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler">
+		<beans:property name="defaultFailureUrl" value="/login.do?login_error=1"></beans:property>
+	</beans:bean>
+	<!--统一异常拦截中心-->
+	<beans:bean id="exceptionHandler" class="com.fhd.fdc.commons.exception.FHDExceptionHandler"/>
+	
+	<!--
+	<beans:bean id="authenticationProcessingFilterEntryPoint"
+		class="org.springframework.security.web.authentication.AuthenticationProcessingFilterEntryPoint">
+		<beans:property name="loginFormUrl" value="/sso/ssoLogin.do"></beans:property>
+	</beans:bean>
+	-->
+	
+	<beans:bean id="authenticationProcessingFilterEntryPoint"
+		class="com.fhd.fdc.commons.security.CustomLoginUrlAuthenticationEntryPoint">
+		<beans:property name="loginFormUrl" value="/sso/ssoLogin.do"></beans:property>
+	</beans:bean>
+
+	<!-- <global-method-security secured-annotations="enabled" jsr250-annotations="enabled" 
+		/> -->
+	<beans:bean id="loggerListener" class="org.springframework.security.access.event.LoggerListener" />
+
+	<beans:bean id="customPasswordValidEncoder" class="com.fhd.fdc.commons.security.CustomPasswordValidEncoder" />
+	<sec:authentication-manager alias="authenticationManager">
+		<sec:authentication-provider user-service-ref="userDetailsBO">
+			<sec:password-encoder ref="customPasswordValidEncoder" />  
+			<!--<sec:password-encoder hash="md5" />-->
+		</sec:authentication-provider>
+	</sec:authentication-manager>
+</beans:beans>

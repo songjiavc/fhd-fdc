@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="utf-8" />
+<title>基于jQuery使用superslide插件实现鱼骨图形式信息展示特效源码</title>
+<link rel="stylesheet" href="css/fishBone.css" />
+<script type="text/javascript" src="js/jquery-1.8.0.min.js"></script>
+<script type="text/javascript" src="js/fishBone.js"></script>
+<script type="text/javascript" src="js/jquery.SuperSlide.2.1.1.js"></script>
+<script>
+	
+
+	
+	
+	data = [
+    {
+        '生产风险':'{"count":37,"riskcode":"ZL0101"}',
+        '生产管理风险': '{"count":24,"riskcode":"ZL0102"}',
+		'质量风险': '{"count":12,"riskcode":"ZL0103"}',
+        '财务风险': '{"count":5,"riskcode":"ZL0105"}',
+        '运营风险': '{"count":2,"riskcode":"ZL0106"}',
+        '案号': '生产作业计划的编制与下达'
+    },
+    {
+        '生产风险': '{"count":21,"riskcode":"ZL0101"}',
+        '生产管理风险': '{"count":15,"riskcode":"ZL0102"}',
+		'质量风险': '{"count":9,"riskcode":"ZL0103"}',
+		'财务风险': '{"count":6,"riskcode":"ZL0104"}',
+        '运营风险': '{"count":2,"riskcode":"ZL0105"}',
+        '法律风险': '{"count":1,"riskcode":"ZL0106"}',
+        '案号': '生产作业计划的调整与考核'
+    },
+    {
+        '生产风险': '{"count":56,"riskcode":"ZL0101"}',
+        '生产管理风险': '{"count":52,"riskcode":"ZL0102"}',
+		'质量风险': '{"count":31,"riskcode":"ZL0103"}',
+		'财务风险': '{"count":24,"riskcode":"ZL0104"}',
+        '运营风险': '{"count":22,"riskcode":"ZL0105"}',
+        '法律风险': '{"count":5,"riskcode":"ZL0106"}',
+        '案号': '生产作业计划完成情况结算'
+    },
+    {
+        '生产风险': '{"count":34,"riskcode":"ZL0101"}',
+        '生产管理风险': '{"count":19,"riskcode":"ZL0102"}',
+		'质量风险': '{"count":15,"riskcode":"ZL0103"}',
+		'财务风险': '{"count":11,"riskcode":"ZL0104"}',
+        '运营风险': '{"count":9,"riskcode":"ZL0105"}',
+        '法律风险': '{"count":5,"riskcode":"ZL0106"}',
+        '案号': '临时计划下达流程'
+    },
+    {
+        '生产风险': '{"count":25,"riskcode":"ZL0101"}',
+        '生产管理风险': '{"count":17,"riskcode":"ZL0102"}',
+		'质量风险': '{"count":14,"riskcode":"ZL0103"}',
+		'财务风险': '{"count":10,"riskcode":"ZL0104"}',
+        '运营风险': '{"count":6,"riskcode":"ZL0105"}',
+        '法律风险': '{"count":2,"riskcode":"ZL0106"}',
+        '案号': '调度管理流程'
+    },
+    {
+        '生产风险': '{"count":24,"riskcode":"ZL0101"}',
+        '生产管理风险': '{"count":21,"riskcode":"ZL0102"}',
+		'质量风险': '{"count":19,"riskcode":"ZL0103"}',
+		'财务风险': '{"count":13,"riskcode":"ZL0104"}',
+        '运营风险': '{"count":4,"riskcode":"ZL0105"}',
+        '法律风险': '{"count":1,"riskcode":"ZL0106"}',
+        '案号': '批次管理流程'
+    },
+    {
+        '设备资产风险': '{"count":54,"riskcode":"ZL0101"}',
+        '设备维修风险': '{"count":39,"riskcode":"ZL0102"}',
+		'质量风险': '{"count":25,"riskcode":"ZL0103"}',
+		'财务风险': '{"count":17,"riskcode":"ZL0104"}',
+        '运营风险': '{"count":11,"riskcode":"ZL0105"}',
+        '法律风险': '{"count":5,"riskcode":"ZL0106"}',
+        '案号': '设备管理'
+    },
+    {
+        '质量目标风险': '{"count":26,"riskcode":"ZL0101"}',
+        '成本控制风险': '{"count":24,"riskcode":"ZL0102"}',
+		'质量风险': '{"count":14,"riskcode":"ZL0103"}',
+		'财务风险': '{"count":9,"riskcode":"ZL0104"}',
+        '运营风险': '{"count":2,"riskcode":"ZL0105"}',
+        '法律风险': '{"count":1,"riskcode":"ZL0106"}',
+        '案号': '质量管理'
+    }
+];
+	$(function() {
+		//创建案件历史
+		$(".fishBone").fishBone(data);
+	});
+	function showList(e){
+		var obj = e;
+		alert("您点击的是："+obj.innerText+"riskcode："+obj.id);
+		
+	}
+</script>
+</head>
+
+<body>
+<div  class="container">
+	<div  class="fishBone" />
+</div>
+</body>
+</html>

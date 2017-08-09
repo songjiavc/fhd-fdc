@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<process name="rmResponseSolution" xmlns="http://jbpm.org/4.4/jpdl">
+	<description>rmResponseSolution</description>
+	<start g="427,0,200,50" name="start1">
+		<transition to="发起执行"/>
+	</start>
+	<task assignee="#{startExecuteEmpId}" form="FHD.view.response.bpm.StartExecutionFormForBpm" g="350,80,200,50" name="发起执行">
+		<description>{rate:{taskRate:20}}</description>
+		<transition to="应对执行foreach"/>
+	</task>
+	<foreach g="426,195,48,48" in="#{items}" name="应对执行foreach" var="item">
+		<transition to="应对执行"/>
+	</foreach>
+	<task assignee="#{item.solutionExecuteEmpId}" form="FHD.view.response.bpm.SolutionExecutionFormForBpm" g="350,307,200,50" name="应对执行">
+		<description>{rate:{taskRate:30,finishRate:100}}</description>
+		<transition to="endjoin"/>
+	</task>
+	<join g="429,402,48,48" multiplicity="#{joinCount}" name="endjoin">
+		<transition to="汇总"/>
+	</join>
+	<java class="com.fhd.ra.web.controller.response.execute.ResponseSolutionExecuteControl" g="350,507,200,50" method="updateSolutionStatus" name="汇总">
+		<arg>
+			<object expr="#{items}"/>
+		</arg>
+		<transition to="end1"/>
+	</java>
+	<end g="427,620,200,50" name="end1"/>
+</process>

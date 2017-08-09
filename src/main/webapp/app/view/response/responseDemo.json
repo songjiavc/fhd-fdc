@@ -1,0 +1,60 @@
+[
+
+{
+	"id" : "1",
+	"risk":"供应商订货起点与生产需求相差较大",
+	"dealMethod" : "合理确定批货量",
+	"respondDepartment" : "物资选购中心",
+	"personInCharge" : "张芳",
+	"finishSymbol" : "进货稳定",
+	"finishTime" : "2012/12/12",
+	"executeCritera" : "",
+	"status": "未执行"
+},
+{
+	"id" : "2",
+	"risk":"供应商订货起点与生产需求相差较大",
+	"dealMethod" : "梳理物资最小起订",
+	"respondDepartment" : "物资选购中心",
+	"personInCharge" : "李磊",
+	"finishSymbol" : "价格下降",
+	"finishTime" : "2012/12/12",
+	"executeCritera" : "",
+	"status": "未执行"
+},
+{
+	"id" : "3",
+	"risk":"库存信息掌握不准确",
+	"dealMethod" : "及时共享在制产品信息",
+	"respondDepartment" : "物资配送中心",
+	"personInCharge" : "李金羽",
+	"finishSymbol" : "信息畅通",
+	"finishTime" : "2012/12/12",
+	"executeCritera" : "",
+	"status": "未完成"
+},
+{
+	"id" : "4",
+	"risk":"库存信息掌握不准确",
+	"dealMethod" : "对所有物品执行严格的入库管理",
+	"respondDepartment" : "物资配送中心",
+	"personInCharge" : "张杰",
+	"finishSymbol" : "物资入口制度发布",
+	"finishTime" : "2009/12/12",
+	"executeCritera" : "",
+	"status": "执行中"
+},
+{
+	"id" : "5",
+	"risk":"库存信息掌握不准确",
+	"dealMethod" : "建立健全物资请购制度",
+	"respondDepartment" : "物资配送中心",
+	"personInCharge" : "张华",
+	"finishSymbol" : "物资入口制度发布",
+	"finishTime" : "2012/12/11",
+	"executeCritera" : "",
+	"status": "未执行"
+}
+
+
+]

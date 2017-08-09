@@ -1,0 +1,17 @@
+<Chart bgColor='FFFFFF' bgAlpha='0' showBorder='0' upperLimit='100' lowerLimit='0' gaugeRoundRadius='5' chartTopMargin="0" chartBottomMargin="0" ticksBelowGauge='1' showGaugeLabels='0' valueAbovePointer='0' pointerOnTop='1' pointerRadius='4' numberSuffix="%25">
+    <colorRange> 
+        <color minValue='0' maxValue='90' code='fa765a'/>
+        <color minValue='90' maxValue='95' code='fdee58'/> 
+        <color minValue='95' maxValue='100' code='99f883'/> 
+    </colorRange>
+    <value>97.2</value>
+
+    <styles>
+        <definition>
+            <style name='ValueFont' type='Font' bgColor='333333' size='10' color='FFFFFF'/>
+        </definition>
+        <application>
+            <apply toObject='VALUE' styles='valueFont'/>
+        </application>	
+    </styles>
+</Chart>

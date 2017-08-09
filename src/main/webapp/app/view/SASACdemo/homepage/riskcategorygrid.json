@@ -1,0 +1,22 @@
+[
+   {companyName:'中石油集团',
+	kind:'石油石化',
+	riskToincome:'<img src=\'images/kpi/cockpit/high.gif\' />',
+	riskToprofit:'<img src=\'images/kpi/cockpit/mid.gif\' />'},
+   {companyName:'中石化集团',
+	kind:'石油石化',
+	riskToincome:'<img src=\'images/kpi/cockpit/low.gif\' />',
+	riskToprofit:'<img src=\'images/kpi/cockpit/high.gif\' />'},
+   {companyName:'中海油集团',
+	kind:'石油石化',
+	riskToincome:'<img src=\'images/kpi/cockpit/mid.gif\' />',
+	riskToprofit:'<img src=\'images/kpi/cockpit/mid.gif\' />'},
+   {companyName:'五矿集团',
+	kind:'贸易',
+	riskToincome:'<img src=\'images/kpi/cockpit/high.gif\' />',
+	riskToprofit:'<img src=\'images/kpi/cockpit/mid.gif\' />'},
+   {companyName:'中冶集团',
+	kind:'建筑',
+	riskToincome:'<img src=\'images/kpi/cockpit/mid.gif\' />',
+	riskToprofit:'<img src=\'images/kpi/cockpit/low.gif\' />'}
+]

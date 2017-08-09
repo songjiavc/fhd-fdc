@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<process name="contingencyPlanTotal" xmlns="http://jbpm.org/4.4/jpdl">
+   <description>complex</description>
+   <start g="27,28,48,48" name="start1">
+      <transition to="预案计划制定"/>
+   </start>
+   
+   <!-- 计划制定 -->
+   <task assignee="#{makePlanEmpId}" form="FHD.view.risk.managereport.managereportmake.ManageReportPlanMakeEditMain" g="100,25,208,52" name="预案计划制定">
+      <description>{rate:{taskRate:10}}</description>
+      <transition to="预案计划主管审批"/>
+   </task>
+   
+   <!-- 计划主管审批 -->
+   <task assignee="#{AssessPlanApproverEmpId}" form="FHD.view.risk.contingencyPlan.planManagerApprove.PlanManagerApproveMain" g="381,23,208,52" name="预案计划主管审批">
+      <description>{rate:{taskRate:15}}</description>
+      <transition to="预案计划主管审批decision"/>
+   </task>
+   <decision g="179,132,48,48" name="预案计划主管审批decision">
+      	<transition to="预案计划领导审批">
+			<condition expr="#{path=='yes'}"/>
+		</transition>
+      	<transition to="预案计划制定">
+			<condition expr="#{path=='no'}"/>
+		</transition>
+   </decision>
+   
+   <!-- 计划领导审批 -->
+   <task assignee="#{PlanDeptLeader}" form="FHD.view.risk.contingencyPlan.planLeadApprove.PlanLeadApproveMain" g="383,113,208,52" name="预案计划领导审批">
+      <description>{rate:{taskRate:20}}</description>
+      <transition to="预案计划领导审批decision"/>
+   </task>
+   <decision g="653,24,48,48" name="预案计划领导审批decision">
+      	<transition to="承办人分配任务foreach">
+			<condition expr="#{path=='yes'}"/>
+		</transition>
+      	<transition to="预案计划主管审批">
+			<condition expr="#{path=='no'}"/>
+		</transition>
+   </decision>
+   
+   <foreach g="741,24,48,48" in="#{assessPlanTakers}" name="承办人分配任务foreach" var="assessPlanTaker">
+      <transition to="预案任务分配"/>
+   </foreach>
+   
+   <!-- 分配任务 -->
+   <task assignee="#{assessPlanTaker.planTakerEmpId}" form="FHD.view.risk.contingencyPlan.planSet.PlanSetMainPanel" g="825,21,240,52" name="预案任务分配">
+   	  <description>{rate:{taskRate:30,finishRate:80}}</description>
+      <transition to="应急预案"/>
+   </task>
+   
+   <!-- 风险辨识 -->
+   <sub-process g="839,200,214,52" name="应急预案" sub-process-key="contingencyPlanSub">
+   	  <parameter-in subvar="startuserid" var="startuserid"/>
+      <parameter-in subvar="businessName" var="businessName"/>
+      <parameter-in subvar="businessId" var="businessId"/>
+      <parameter-in subvar="id" var="id"/>
+      <parameter-in subvar="name" var="name"/>
+      <transition to="join1"/>
+   </sub-process>
+   
+   <join g="671,200,48,48" multiplicity="#{assessPlanTakersJoinCount}" name="join1">
+     <on event="end">
+      <event-listener class="com.fhd.ra.business.contingencyplan.ContingencyPlanListener"/>
+   	 </on>
+     <transition to="预案汇总整理"/>
+   </join>
+   
+   <!-- 预案汇总整理 -->
+   <task assignee="#{approveFore}" form="FHD.view.risk.contingencyPlan.planCollectApprove.PlanCollectApproveMain" g="384,200,208,48" name="预案汇总整理">
+      <description>{rate:{taskRate:80}}</description>
+      <transition to="预案风险部门主管审批"/>
+   </task>
+   
+   <!-- 风险部门主管审批 -->
+   <task assignee="#{approveFive}" form="FHD.view.risk.contingencyPlan.deptManagerApprove.DeptManagerApproveMain" g="387,300,208,52" name="预案风险部门主管审批">
+      <description>{rate:{taskRate:85}}</description>
+      <transition to="预案风险部门主管审批decision"/>
+   </task>
+   <decision g="179,200,48,48" name="预案风险部门主管审批decision">
+      	<transition to="预案风险部门领导审批">
+			<condition expr="#{path=='yes'}"/>
+		</transition>
+      	<transition to="预案汇总整理">
+			<condition expr="#{path=='no'}"/>
+		</transition>
+   </decision>
+   
+   <!-- 风险部门领导审批 -->
+   <task assignee="#{approveSix}" form="FHD.view.risk.contingencyPlan.deptLeadApprove.DeptLeadApproveMain" g="100,300,208,52" name="预案风险部门领导审批">
+      <description>{rate:{taskRate:90}}</description>
+      <transition to="预案风险部门领导审批decision"/>
+   </task>
+   <decision g="467,414,48,48" name="预案风险部门领导审批decision">
+      	<transition to="业务分总审批">
+			<condition expr="#{path=='yes'}"/>
+		</transition>
+      	<transition to="预案风险部门主管审批">
+			<condition expr="#{path=='no'}"/>
+		</transition>
+   </decision>
+   
+   <!-- 业务分总审批 -->
+   <task assignee="#{approveSeven}" form="FHD.view.risk.contingencyPlan.planTotalApprove.PlanTotalApproveMain" g="389,540,208,52" name="业务分总审批">
+      <description>{rate:{taskRate:95}}</description>
+      <transition to="业务分总审批decision"/>
+   </task>
+   <decision g="180,415,48,48" name="业务分总审批decision">
+      	<transition to="入库汇总">
+			<condition expr="#{path=='yes'}"/>
+		</transition>
+      	<transition to="预案风险部门领导审批">
+			<condition expr="#{path=='no'}"/>
+		</transition>
+   </decision>
+   
+   <java class="com.fhd.ra.web.controller.contingencyplan.ContingencyPlanController" g="106,542,200,50" method="saveContingencyPlan" name="入库汇总">
+		<arg>
+			<object expr="#{id}"/>
+		</arg>
+		<transition to="备案"/>
+   </java>
+   
+   <!-- 备案 -->
+   <task assignee="#{approveEight}" form="FHD.view.risk.contingencyPlan.planRecordApprove.PlanRecordApproveMain" g="393,669,208,52" name="备案">
+      <description>{rate:{taskRate:99}}</description>
+      <transition to="end1"/>
+   </task>
+   
+
+   <end g="731,674,48,48" name="end1"/>
+</process>

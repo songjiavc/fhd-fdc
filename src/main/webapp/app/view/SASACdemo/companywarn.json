@@ -1,0 +1,7 @@
+{datas:[
+	{name:'中石油集团',kind:'石油',inValue:"<img src=\'images/kpi/cockpit/high.gif\' />",income:'',pValue:'<img src=\'images/kpi/cockpit/mid.gif\' />',profit:''},
+	{name:'中石化集团',kind:'石油',inValue:"<img src=\'images/kpi/cockpit/mid.gif\' />",income:'',pValue:'<img src=\'images/kpi/cockpit/mid.gif\' />',profit:''},
+	{name:'中海油集团',kind:'石油',inValue:"<img src=\'images/kpi/cockpit/mid.gif\' />",income:'',pValue:'<img src=\'images/kpi/cockpit/mid.gif\' />',profit:''},
+	{name:'五矿集团',kind:'贸易',inValue:"<img src=\'images/kpi/cockpit/low.gif\' />",income:'',pValue:'<img src=\'images/kpi/cockpit/low.gif\' />',profit:''},
+	{name:'中冶集团',kind:'建筑',inValue:"<img src=\'images/kpi/cockpit/mid.gif\' />",income:'',pValue:'<img src=\'images/kpi/cockpit/high.gif\' />',profit:''}
+	],totalCount:5}

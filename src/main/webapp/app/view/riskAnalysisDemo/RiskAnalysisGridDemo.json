@@ -1,0 +1,75 @@
+[
+
+{
+	"id" : "1",
+	"aimTarget":"物料需求计划偏差率",
+	"riskname" : "提报的物料需求量偏大",
+	"riskMeasure" : "物料需求量",
+	"requirement" : "超出风险承受范围",
+	"dataCondition" : "统计数据，完整，可靠",
+	"quantiAnalysis" : "是",
+	"assessmentStatus" : "icon-ibm-symbol-4-sm"
+},
+{
+	"id" : "2",
+	"aimTarget":"库存平均水平",
+	"riskname" : "库存信息不准确",
+	"riskMeasure" : "库存差异率",
+	"requirement" : "",
+	"dataCondition" : "未提供具体数据进行验证",
+	"quantiAnalysis" : "否",
+	"assessmentStatus" : "icon-ibm-symbol-5-sm"
+},
+{
+	"id" : "3",
+	"aimTarget":"库存平均水平",
+	"riskname" : "供应商设置最低采购限额",
+	"riskMeasure" : "发生次数",
+	"requirement" : "是否发生",
+	"dataCondition" : "K24不收最低采购量限制",
+	"quantiAnalysis" : "否",
+	"assessmentStatus" : "icon-ibm-symbol-5-sm"
+},
+{
+	"id" : "4",
+	"aimTarget":"库存平均水平",
+	"riskname" : "需要进行战略储备",
+	"riskMeasure" : "",
+	"requirement" : "",
+	"dataCondition" : "K24不进行战略储备，只进行正常采购",
+	"quantiAnalysis" : "否",
+	"assessmentStatus" : "icon-ibm-symbol-5-sm"
+},
+{
+	"id" : "5",
+	"aimTarget":"库存平均水平",
+	"riskname" : "生产计划超出正常生产能力",
+	"riskMeasure" : "生产计划完成率",
+	"requirement" : "",
+	"dataCondition" : "存在人为的数据调整，数据真实可靠性差",
+	"quantiAnalysis" : "否",
+	"assessmentStatus" : "icon-ibm-symbol-6-sm"
+},
+{
+	"id" : "6",
+	"aimTarget":"库存平均水平",
+	"riskname" : "生产设备不能正常使用",
+	"riskMeasure" : "生产设备可动率",
+	"requirement" : "",
+	"dataCondition" : "只获取了2012年1-8月的数据，数据量过少",
+	"quantiAnalysis" : "否",
+	"assessmentStatus" : "icon-ibm-symbol-5-sm"
+},
+{
+	"id" : "7",
+	"aimTarget":"库存平均水平",
+	"riskname" : "生产实际消耗发生波动",
+	"riskMeasure" : "零件合格率",
+	"requirement" : "",
+	"dataCondition" : "与需求计划偏差率关系不明显",
+	"quantiAnalysis" : "否",
+	"assessmentStatus" : "icon-ibm-symbol-6-sm"
+}
+
+
+]

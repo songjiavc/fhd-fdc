@@ -1,0 +1,393 @@
+/*
+Navicat MySQL Data Transfer
+
+Source Server         : mysql
+Source Server Version : 50525
+Source Host           : 192.168.0.3:3306
+Source Database       : ermis45_develop
+
+Target Server Type    : MYSQL
+Target Server Version : 50525
+File Encoding         : 65001
+
+Date: 2013-12-23 16:05:43
+*/
+
+SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for `temp_imp_process`
+-- ----------------------------
+DROP TABLE IF EXISTS `temp_imp_process`;
+CREATE TABLE `temp_imp_process` ( -- 流程临时表
+  `ID` varchar(100) NOT NULL,
+  `E_INDEX` int(255) DEFAULT NULL, -- 数据序号
+  `PARENT_PROCESS_CODE` varchar(255) DEFAULT NULL,  -- 上级流程编号
+  `PARENT_PROCESS_NAME` varchar(4000) DEFAULT NULL, -- 上级流程名称
+  `PROCESS_CODE` varchar(255) DEFAULT NULL, -- 流程编号
+  `PROCESS_NAME` varchar(4000) DEFAULT NULL, -- 流程名称
+  `RESPONSIBLE_ORG` varchar(255) DEFAULT NULL, -- 责任部门
+  `RELATE_ORG` varchar(255) DEFAULT NULL, -- 相关部门
+  `FREQUENCY` varchar(255) DEFAULT NULL, -- 发生频率
+  `AFFECT_SUBJECTS` varchar(255) DEFAULT NULL, -- 影响的财报科目
+  `RESPONSIBLE_EMP` varchar(255) DEFAULT NULL, -- 责任人
+  `ERROR_TIP` varchar(4000) DEFAULT NULL, -- 错误提示
+  `FILE_ID` varchar(100) DEFAULT NULL, -- 文件id
+  `PARENT_ID` varchar(100) DEFAULT NULL, -- 上级流程id
+  `ID_SEQ` text, -- id序列
+  `ELEVEL` int(11) DEFAULT NULL, -- 层级
+  `ESORT` int(11) DEFAULT NULL, -- 排序
+  `IS_LEAF` int(11) DEFAULT NULL, -- 是否叶子结点
+  `DEAL_STATUS` varchar(100) DEFAULT NULL, -- 处理状态
+  `DELETE_STATUS` varchar(100) DEFAULT NULL COMMENT '0：已删除；1：启用中', -- 删除状态
+  `CREATE_TIME` datetime DEFAULT NULL, -- 创建时间
+  `CREATE_BY` varchar(100) DEFAULT NULL, -- 创建人
+  `COMPANY_ID` varchar(100) DEFAULT NULL, -- 公司id
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+
+
+/*
+Navicat MySQL Data Transfer
+
+Source Server         : mysql
+Source Server Version : 50525
+Source Host           : 192.168.0.3:3306
+Source Database       : ermis45_develop
+
+Target Server Type    : MYSQL
+Target Server Version : 50525
+File Encoding         : 65001
+
+Date: 2013-12-23 16:05:49
+*/
+
+SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for `temp_imp_process_point`
+-- ----------------------------
+DROP TABLE IF EXISTS `temp_imp_process_point`;
+CREATE TABLE `temp_imp_process_point` ( -- 流程节点临时表
+  `ID` varchar(100) NOT NULL,
+  `E_INDEX` int(255) DEFAULT NULL, -- 数据序号
+  `PROCESS_CODE` varchar(255) DEFAULT NULL, -- 流程编号
+  `PROCESS_NAME` varchar(255) DEFAULT NULL, -- 流程名称
+  `PROCESS_POINT_CODE` varchar(255) DEFAULT NULL, -- 流程节点编号
+  `PROCESS_POINT_NAME` varchar(4000) DEFAULT NULL, -- 流程节点名称
+  `TYPE` varchar(255) DEFAULT NULL, -- 流程节点类型
+  `PROCESS_POINT_DESC` varchar(255) DEFAULT NULL, -- 流程节点描述
+  `RESPONSIBLE_ORG` varchar(255) DEFAULT NULL, -- 责任部门
+  `RESPONSIBLE_EMP` varchar(255) DEFAULT NULL, -- 责任人
+  `INPUT_INFO` varchar(4000) DEFAULT NULL, -- 输入信息
+  `OUTPUT_INFO` varchar(4000) DEFAULT NULL, -- 输出信息
+  `ERROR_TIP` varchar(4000) DEFAULT NULL, -- 错误提示
+  `FILE_ID` varchar(100) DEFAULT NULL, -- 文件id
+  `PROCESS_ID` varchar(100) DEFAULT NULL, -- 流程id
+  `DELETE_STATUS` varchar(100) DEFAULT NULL, -- 删除状态
+  `STATUS` varchar(100) DEFAULT NULL, -- 状态:默认值为--0yn_y
+  `ESORT` int(255) DEFAULT NULL, -- 排序
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+
+
+/*
+Navicat MySQL Data Transfer
+
+Source Server         : mysql
+Source Server Version : 50525
+Source Host           : 192.168.0.3:3306
+Source Database       : ermis45_develop
+
+Target Server Type    : MYSQL
+Target Server Version : 50525
+File Encoding         : 65001
+
+Date: 2013-12-23 16:05:53
+*/
+
+SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for `temp_imp_process_point_relation`
+-- ----------------------------
+DROP TABLE IF EXISTS `temp_imp_process_point_relation`;
+CREATE TABLE `temp_imp_process_point_relation` ( -- 流程节点关系表
+  `ID` varchar(100) NOT NULL,
+  `E_INDEX` int(255) DEFAULT NULL, -- 数据序号
+  `PROCESS_ID` varchar(100) DEFAULT NULL, -- 流程id
+  `PROCESS_CODE` varchar(255) DEFAULT NULL, -- 流程编号
+  `PROCESS_NAME` varchar(255) DEFAULT NULL, -- 流程名称
+  `PROCESS_POINT_ID` varchar(100) NOT NULL, -- 流程节点id
+  `PROCESS_POINT_CODE` varchar(255) DEFAULT NULL, -- 流程节点编号
+  `PROCESS_POINT_NAME` varchar(4000) DEFAULT NULL, -- 流程节点名称
+  `PARENT_PROCESS_POINT_ID` varchar(100) NOT NULL, -- 上一步流程节点id
+  `PARENT_PROCESS_POINT_CODE` varchar(255) DEFAULT NULL, -- 上一步流程节点编号
+  `PARENT_PROCESS_POINT_NAME` varchar(4000) DEFAULT NULL, -- 上一步流程节点名称
+  `ENTER_CONDITION` varchar(255) DEFAULT NULL, -- 上一步流程节点进入条件
+  `ERROR_TIP` varchar(4000) DEFAULT NULL, -- 错误提示
+  `FILE_ID` varchar(100) DEFAULT NULL, -- 文件id
+  PRIMARY KEY (`ID`,`PROCESS_POINT_ID`,`PARENT_PROCESS_POINT_ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+
+/*
+Navicat MySQL Data Transfer
+
+Source Server         : mysql
+Source Server Version : 50525
+Source Host           : 192.168.0.3:3306
+Source Database       : ermis45_develop
+
+Target Server Type    : MYSQL
+Target Server Version : 50525
+File Encoding         : 65001
+
+Date: 2013-12-23 16:05:04
+*/
+
+SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for `temp_imp_control_standard`
+-- ----------------------------
+DROP TABLE IF EXISTS `temp_imp_control_standard`;
+CREATE TABLE `temp_imp_control_standard` ( -- 控制标准(要求)临时表
+  `ID` varchar(100) NOT NULL,
+  `E_INDEX` int(255) DEFAULT NULL, -- 数据序号
+  `PARENT_CONTROL_STANDARD_CODE` varchar(255) DEFAULT NULL, -- 控制标准(要求)编号
+  `PARENT_CONTROL_STANDARD_NAME` varchar(4000) DEFAULT NULL, -- 控制标准(要求)名称
+  `CONTROL_STANDARD_CODE` varchar(255) DEFAULT NULL, -- 控制标准(要求)编号
+  `CONTROL_STANDARD_NAME` varchar(4000) DEFAULT NULL, -- 控制标准(要求)名称
+  `RESPONSIBLE_ORG` varchar(255) DEFAULT NULL, -- 责任部门
+  `CONTROL_LEVEL` varchar(255) DEFAULT NULL, -- 控制层级
+  `CONTROL_ELEMENTS` varchar(255) DEFAULT NULL, -- 控制元素
+  `IS_CLASS` varchar(255) DEFAULT NULL, -- 是否分类
+  `ERROR_TIP` varchar(4000) DEFAULT NULL, -- 错误提示
+  `FILE_ID` varchar(100) DEFAULT NULL, -- 文件id
+  `PARENT_ID` varchar(100) DEFAULT NULL, -- 上级控制标准(要求)id
+  `ID_SEQ` text, -- id序列
+  `ELEVEL` int(11) DEFAULT NULL, -- 层级
+  `ESORT` int(11) DEFAULT NULL, -- 排序
+  `IS_LEAF` int(11) DEFAULT NULL, -- 是否叶子结点
+  `DEAL_STATUS` varchar(100) DEFAULT NULL, -- 处理状态
+  `DELETE_STATUS` varchar(100) DEFAULT NULL COMMENT '0：已删除；1：启用中', -- 删除状态
+  `CREATE_TIME` datetime DEFAULT NULL, -- 创建时间
+  `CREATE_BY` varchar(100) DEFAULT NULL, -- 创建人
+  `COMPANY_ID` varchar(100) DEFAULT NULL -- 公司id
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+
+/*
+Navicat MySQL Data Transfer
+
+Source Server         : mysql
+Source Server Version : 50525
+Source Host           : 192.168.0.3:3306
+Source Database       : ermis45_develop
+
+Target Server Type    : MYSQL
+Target Server Version : 50525
+File Encoding         : 65001
+
+Date: 2013-12-23 16:05:59
+*/
+
+SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for `temp_imp_process_standard_risk_relation`
+-- ----------------------------
+DROP TABLE IF EXISTS `temp_imp_process_standard_risk_relation`;
+CREATE TABLE `temp_imp_process_standard_risk_relation` ( -- 控制标准(要求)--流程--风险关系表
+  `ID` varchar(100) NOT NULL,
+  `E_INDEX` int(255) DEFAULT NULL, -- 数据序号
+  `PROCESS_ID` varchar(100) DEFAULT NULL, -- 流程id
+  `PROCESS_CODE` varchar(255) DEFAULT NULL, -- 流程编号
+  `PROCESS_NAME` varchar(4000) DEFAULT NULL, -- 流程名称
+  `CONTROL_STANDARD_ID` varchar(100) DEFAULT NULL, -- 控制标准(要求)id
+  `CONTROL_STANDARD_CODE` varchar(255) DEFAULT NULL, -- 控制标准(要求)编号
+  `CONTROL_STANDARD_NAME` varchar(4000) DEFAULT NULL, -- 控制标准(要求)名称
+  `RISK_ID` varchar(100) DEFAULT NULL, -- 风险id
+  `RISK_CODE` varchar(255) DEFAULT NULL, -- 风险编号
+  `RISK_NAME` varchar(4000) DEFAULT NULL, -- 风险名称
+  `ERROR_TIP` varchar(4000) DEFAULT NULL, -- 错误提示
+  `FILE_ID` varchar(100) DEFAULT NULL -- 文件id
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+/*
+Navicat MySQL Data Transfer
+
+Source Server         : mysql
+Source Server Version : 50525
+Source Host           : 192.168.0.3:3306
+Source Database       : ermis45_develop
+
+Target Server Type    : MYSQL
+Target Server Version : 50525
+File Encoding         : 65001
+
+Date: 2013-12-23 15:55:39
+*/
+
+SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for `temp_imp_control_measure`
+-- ----------------------------
+DROP TABLE IF EXISTS `temp_imp_control_measure`;
+CREATE TABLE `temp_imp_control_measure` ( -- 控制措施临时表
+  `ID` varchar(100) NOT NULL,
+  `E_INDEX` int(255) DEFAULT NULL, -- 数据序号
+  `CONTROL_MEASURE_CODE` varchar(255) DEFAULT NULL, -- 控制措施编号
+  `CONTROL_MEASURE_NAME` varchar(4000) DEFAULT NULL, -- 控制措施名称
+  `RESPONSIBLE_ORG` varchar(255) DEFAULT NULL, -- 责任部门
+  `RESPONSIBLE_EMP` varchar(255) DEFAULT NULL, -- 责任人
+  `IS_KEY_CONTROL_POINT` varchar(255) DEFAULT NULL, -- 是否关键控制点
+  `CONTROL_TARGET` varchar(255) DEFAULT NULL, -- 控制目标
+  `IMPLEMENT_PROOF` varchar(255) DEFAULT NULL, -- 实施证据
+  `CONTROL_MODE` varchar(255) DEFAULT NULL, -- 控制模式
+  `CONTROL_FREQUENCY` varchar(255) DEFAULT NULL, -- 控制频率
+  `ERROR_TIP` varchar(4000) DEFAULT NULL, -- 错误提示
+  `FILE_ID` varchar(100) DEFAULT NULL, -- 文件id
+  `ESORT` int(11) DEFAULT NULL, -- 排序
+  `ESTATUS` varchar(100) DEFAULT NULL, -- 状态:默认值为--0yn_y
+  `DELETE_STATUS` varchar(100) DEFAULT NULL COMMENT '0：已删除；1：启用中', -- 删除状态
+  `CREATE_TIME` datetime DEFAULT NULL, -- 创建时间
+  `CREATE_BY` varchar(100) DEFAULT NULL, -- 创建人
+  `COMPANY_ID` varchar(100) DEFAULT NULL, -- 公司id
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+
+/*
+Navicat MySQL Data Transfer
+
+Source Server         : mysql
+Source Server Version : 50525
+Source Host           : 192.168.0.3:3306
+Source Database       : ermis45_develop
+
+Target Server Type    : MYSQL
+Target Server Version : 50525
+File Encoding         : 65001
+
+Date: 2013-12-23 16:06:03
+*/
+
+SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for `temp_imp_risk_process_point_measure_relation`
+-- ----------------------------
+DROP TABLE IF EXISTS `temp_imp_risk_process_point_measure_relation`;
+CREATE TABLE `temp_imp_risk_process_point_measure_relation` ( -- 流程--流程节点--风险--控制措施关系表
+  `ID` varchar(100) NOT NULL,
+  `E_INDEX` int(255) DEFAULT NULL, -- 数据序号
+  `RISK_ID` varchar(100) DEFAULT NULL, -- 风险id
+  `RISK_CODE` varchar(255) DEFAULT NULL, -- 风险编号
+  `RISK_NAME` varchar(4000) DEFAULT NULL, -- 风险名称
+  `PROCESS_ID` varchar(100) DEFAULT NULL, -- 流程id
+  `PROCESS_CODE` varchar(255) DEFAULT NULL, -- 流程编号
+  `PROCESS_NAME` varchar(4000) DEFAULT NULL, -- 流程名称
+  `PROCESS_POINT_ID` varchar(100) DEFAULT NULL, -- 流程节点id
+  `PROCESS_POINT_CODE` varchar(255) DEFAULT NULL, -- 流程节点编号
+  `PROCESS_POINT_NAME` varchar(4000) DEFAULT NULL, -- 流程节点名称
+  `CONTROL_MEASURE_ID` varchar(100) DEFAULT NULL, -- 控制措施id
+  `CONTROL_MEASURE_CODE` varchar(255) DEFAULT NULL, -- 控制措施编号
+  `CONTROL_MEASURE_NAME` varchar(4000) DEFAULT NULL, -- 控制措施名称
+  `ERROR_TIP` varchar(4000) DEFAULT NULL, -- 错误提示
+  `FILE_ID` varchar(100) DEFAULT NULL -- 文件id
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+
+/*
+Navicat MySQL Data Transfer
+
+Source Server         : mysql
+Source Server Version : 50525
+Source Host           : 192.168.0.3:3306
+Source Database       : ermis45_develop
+
+Target Server Type    : MYSQL
+Target Server Version : 50525
+File Encoding         : 65001
+
+Date: 2013-12-23 16:05:38
+*/
+
+SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for `temp_imp_practice_test_assess_point`
+-- ----------------------------
+DROP TABLE IF EXISTS `temp_imp_practice_test_assess_point`;
+CREATE TABLE `temp_imp_practice_test_assess_point` ( -- 穿行测试评价点临时表
+  `ID` varchar(100) NOT NULL,
+  `E_INDEX` int(255) DEFAULT NULL, -- 数据序号
+  `PROCESS_CODE` varchar(255) DEFAULT NULL, -- 流程编号
+  `PROCESS_NAME` varchar(255) DEFAULT NULL, -- 流程名称
+  `PROCESS_POINT_CODE` varchar(255) DEFAULT NULL, -- 流程节点编号
+  `PROCESS_POINT_NAME` varchar(4000) DEFAULT NULL, -- 流程节点名称
+  `ASSESS_POINT_CODE` varchar(255) DEFAULT NULL, -- 评价点编号
+  `ASSESS_POINT_NAME` varchar(4000) DEFAULT NULL, -- 评价点名称
+  `AFFECT_SUBJECTS` varchar(4000) DEFAULT NULL, -- 影响的财报科目
+  `IMPLEMENT_PROOF` varchar(4000) DEFAULT NULL, -- 实施证据
+  `ERROR_TIP` varchar(4000) DEFAULT NULL, -- 错误提示
+  `FILE_ID` varchar(100) DEFAULT NULL, -- 文件id
+  `PROCESS_ID` varchar(100) DEFAULT NULL, -- 流程id
+  `PROCESS_POINT_ID` varchar(100) DEFAULT NULL, -- 流程节点id
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+/*
+Navicat MySQL Data Transfer
+
+Source Server         : mysql
+Source Server Version : 50525
+Source Host           : 192.168.0.3:3306
+Source Database       : ermis45_develop
+
+Target Server Type    : MYSQL
+Target Server Version : 50525
+File Encoding         : 65001
+
+Date: 2013-12-23 16:06:09
+*/
+
+SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for `temp_imp_sampling_test_assess_point`
+-- ----------------------------
+DROP TABLE IF EXISTS `temp_imp_sampling_test_assess_point`;
+CREATE TABLE `temp_imp_sampling_test_assess_point` ( -- 抽样测试评价点临时表
+  `ID` varchar(100) NOT NULL,
+  `E_INDEX` int(255) DEFAULT NULL, -- 数据序号
+  `PROCESS_CODE` varchar(255) DEFAULT NULL, -- 流程编号
+  `PROCESS_NAME` varchar(255) DEFAULT NULL, -- 流程名称
+  `CONTROL_MEASURE_CODE` varchar(255) DEFAULT NULL, -- 控制措施编号
+  `CONTROL_MEASURE_NAME` varchar(4000) DEFAULT NULL, -- 控制措施名称
+  `ASSESS_POINT_CODE` varchar(255) DEFAULT NULL, -- 评价点编号
+  `ASSESS_POINT_NAME` varchar(4000) DEFAULT NULL, -- 评价点名称
+  `AFFECT_SUBJECTS` varchar(4000) DEFAULT NULL, -- 影响的财报科目
+  `IMPLEMENT_PROOF` varchar(4000) DEFAULT NULL, -- 实施证据
+  `ERROR_TIP` varchar(4000) DEFAULT NULL, -- 错误提示
+  `FILE_ID` varchar(100) DEFAULT NULL, -- 文件id
+  `PROCESS_ID` varchar(100) DEFAULT NULL, -- 流程id
+  `CONTROL_MEASURE_ID` varchar(100) DEFAULT NULL, -- 控制措施id
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+

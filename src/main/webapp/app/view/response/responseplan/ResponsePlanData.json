@@ -1,0 +1,20 @@
+[
+
+{
+	"measureId" : "1",
+	"riskName":"生产计划编排不完整或不合理，影响生产效率",
+	"indicator":"《生产计划》",
+	"measureName" : "严格按照企业内控制定有效生产计划",
+	"orgName" : "工程技术部",
+	"empName" : "阳祥贵"
+},
+{
+	"measureId" : "2",
+	"riskName":"车间人力、设备、工艺装备、图纸到位情况、生产面积等资源不足，导致无法完成生产计划，影响全年生产任务交付",
+	"indicator":"《库存管理方案指定》",
+	"measureName" : "梳理物资最小起订",
+	"solutionDesc" : "梳理物资最小起订",
+	"orgName" : "工程技术部",
+	"empName" : "张小强"
+}
+]

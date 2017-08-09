@@ -1,0 +1,208 @@
+-- 控制措施
+select * from T_CA_ASSESSMENT_POINT where MEASURE_ID in( -- 598/16
+	select id from T_CON_CONTROL_MEASURE where COMPANY_ID='BJ'
+);
+select * from T_CON_MEASURE_RELA_RISK where CONTROL_MEASURE_ID in( -- 260/16
+	select id from T_CON_CONTROL_MEASURE where COMPANY_ID='BJ'
+);
+select * from T_IC_MEASURE_RELA_CONTROL_POIN where CONTROL_MEASURE_ID in( -- 434/16
+	select id from T_CON_CONTROL_MEASURE where COMPANY_ID='BJ'
+);
+select * from T_IC_MEASURE_RELA_PROCESSURE where CONTROL_MEASURE_ID in( -- 386/16
+	select id from T_CON_CONTROL_MEASURE where COMPANY_ID='BJ'
+);
+select * from t_con_measure_rela_org where CONTROL_MEASURE_ID in( -- 1855/32
+	select id from T_CON_CONTROL_MEASURE where COMPANY_ID='BJ'
+);
+
+
+select * from T_CA_DEFECT_ASSESSMENT where MEASURE_ID in( -- 2/0
+	select id from T_CON_CONTROL_MEASURE where COMPANY_ID='BJ'
+);
+
+select * from t_sys_file where id in(
+	select file_id from T_CA_SAMPLE_RELA_FILE where SAMPLE_ID in(
+		select id from T_CA_SAMPLE where ASSESSMENT_POINT_ID in(
+			select id from T_CA_ASSESSMENT_RESULT where MEASURE_ID in(
+				select id from T_CON_CONTROL_MEASURE where COMPANY_ID='BJ'
+			)
+		)
+	)
+);
+select * from T_CA_SAMPLE_RELA_FILE where SAMPLE_ID in(
+	select id from T_CA_SAMPLE where ASSESSMENT_POINT_ID in(
+		select id from T_CA_ASSESSMENT_RESULT where MEASURE_ID in(
+			select id from T_CON_CONTROL_MEASURE where COMPANY_ID='BJ'
+		)
+	)
+);
+select * from T_CA_SAMPLE where ASSESSMENT_POINT_ID in(
+	select id from T_CA_ASSESSMENT_RESULT where MEASURE_ID in(
+		select id from T_CON_CONTROL_MEASURE where COMPANY_ID='BJ'
+	)
+);
+select * from T_CA_ASSESSMENT_RESULT where MEASURE_ID in(
+	select id from T_CON_CONTROL_MEASURE where COMPANY_ID='BJ'
+);
+select * from T_CA_PLAN_ASSESSMENT_POINT where MEASURE_ID in(
+	select id from T_CON_CONTROL_MEASURE where COMPANY_ID='BJ'
+);
+select * from T_CON_CONTROL_MEASURE where COMPANY_ID='BJ'; -- 267/16
+
+
+-- 控制标准
+select * from t_ic_standard_rela_file where STANDARD_ID in( -- 1/0
+	select id from T_IC_CONTROL_STANDARD where COMPANY_ID='BJ'
+);
+select * from T_IC_STANDARD_RELA_RISK where STANDARD_ID in( -- 9/9
+	select id from T_IC_CONTROL_STANDARD where COMPANY_ID='BJ'
+);
+select * from T_IC_STANDARD_RELA_PROCESSURE where CONTROL_STANDARD_ID in( -- 22/9
+	select id from T_IC_CONTROL_STANDARD where COMPANY_ID='BJ'
+);
+select * from t_ic_standard_rela_org where CONTROL_STANDARD_ID in( -- 49/13
+	select id from T_IC_CONTROL_STANDARD where COMPANY_ID='BJ'
+);
+select * from T_CA_DIAGNOSES_DEFECT where DIAGNOSES_ID in (
+	select id from T_CA_COMPLIANCE_DIAGNOSES where PLAN_RELA_STANDARD_ID in (
+		select id from t_ca_const_plan_rela_standard where STANDARD_ID in( 
+			select id from T_IC_CONTROL_STANDARD where COMPANY_ID='BJ'
+		)
+	)
+);
+
+select * from T_CA_COMPLIANCE_DIAGNOSES where PLAN_RELA_STANDARD_ID in (
+	select id from t_ca_const_plan_rela_standard where STANDARD_ID in( 
+		select id from T_IC_CONTROL_STANDARD where COMPANY_ID='BJ'
+	)
+);
+
+select * from T_CA_CONST_PLAN_RELA_ST_EMP where PLAN_RELA_STANDARD_ID in (
+	select id from t_ca_const_plan_rela_standard where STANDARD_ID in( 
+		select id from T_IC_CONTROL_STANDARD where COMPANY_ID='BJ'
+	)
+);
+
+select * FROM T_CA_CONST_PLAN_RELA_PROCESS where PLAN_RELA_STANDARD_ID in (
+	select id from t_ca_const_plan_rela_standard where STANDARD_ID in( 
+		select id from T_IC_CONTROL_STANDARD where COMPANY_ID='BJ'
+	)
+);
+
+select * from t_ca_const_plan_rela_standard where STANDARD_ID in( 
+	select id from T_IC_CONTROL_STANDARD where COMPANY_ID='BJ'
+);
+select * from T_IC_CONTROL_STANDARD where COMPANY_ID='BJ';
+
+-- 流程
+select * from t_ic_measure_rela_control_poin where CONTROL_POINT_ID in(
+	select id from t_ic_control_point where PROCESSURE_ID in (
+		select id from t_ic_processure where COMPANY_ID='BJ'
+	)
+);
+select * from t_ic_control_point_relevance where CONTROL_POINT_ID in(
+	select id from t_ic_control_point where PROCESSURE_ID in (
+		select id from t_ic_processure where COMPANY_ID='BJ'
+	)
+) or PREVIOUS_CONTROL_POINT_ID in(
+	select id from t_ic_control_point where PROCESSURE_ID in (
+		select id from t_ic_processure where COMPANY_ID='BJ'
+	)
+);
+select * from t_ic_control_point_rela_risk where CONTROL_POINT_ID in(
+	select id from t_ic_control_point where PROCESSURE_ID in (
+		select id from t_ic_processure where COMPANY_ID='BJ'
+	)
+);
+select * from t_ic_control_point_rela_org where CONTROL_POINT_ID in(
+	select id from t_ic_control_point where PROCESSURE_ID in (
+		select id from t_ic_processure where COMPANY_ID='BJ'
+	)
+);
+select * from t_ic_control_point where PROCESSURE_ID in (
+	select id from t_ic_processure where COMPANY_ID='BJ'
+);
+-- -----------流程-------------------------
+
+select * from t_ic_kpi_processure where PROCESSURE_ID in (
+	select id from t_ic_processure where COMPANY_ID='BJ'
+);
+select * from t_rm_processure_adjust_history where PROCESSURE_ID in (
+	select id from t_ic_processure where COMPANY_ID='BJ'
+);
+select * from t_processure_risk_processure where PROCESSURE_ID in (
+	select id from t_ic_processure where COMPANY_ID='BJ'
+);
+select * from t_processure_graph where PROCESSURE_ID in (
+	select id from t_ic_processure where COMPANY_ID='BJ'
+);
+select * from t_ic_standard_rela_processure where PROCESSURE_ID in (
+	select id from t_ic_processure where COMPANY_ID='BJ'
+);
+
+select * from t_ic_processure_rela_rule where PROCESSURE_ID in (
+	select id from t_ic_processure where COMPANY_ID='BJ'
+);
+
+select * from t_ic_processure_rela_org where PROCESSURE_ID in (
+	select id from t_ic_processure where COMPANY_ID='BJ'
+);
+
+select * from t_ic_processure_rela_file where PROCESSURE_ID in (
+	select id from t_ic_processure where COMPANY_ID='BJ'
+);
+
+select * from t_com_graph_rela_process where PROCESS_ID in (
+	select id from t_ic_processure where COMPANY_ID='BJ'
+);
+
+
+select * from t_ic_measure_rela_processure where PROCESSURE_ID in (
+	select id from t_ic_processure where COMPANY_ID='BJ'
+);
+
+select * from t_ic_standard_rela_processure where PROCESSURE_ID in (
+	select id from t_ic_processure where COMPANY_ID='BJ'
+);
+
+select * from T_CA_PLAN_PROCESSURE where PROCESSURE_ID in (
+	select id from t_ic_processure where COMPANY_ID='BJ'
+);
+
+select * from T_CA_PLAN_PROCESSURE_ORG_EMP where PROCESSURE_ID in (
+	select id from t_ic_processure where COMPANY_ID='BJ'
+);
+
+select * from t_ca_assessment_point where PROCESSURE_ID in (
+	select id from t_ic_processure where COMPANY_ID='BJ'
+);
+
+select * from t_sys_file where id in(
+	select file_id from T_CA_SAMPLE_RELA_FILE where SAMPLE_ID in(
+		select id from T_CA_SAMPLE where ASSESSMENT_POINT_ID in(
+			select id from T_CA_ASSESSMENT_RESULT where PROCESSURE_ID in(
+				select id from t_ic_processure where COMPANY_ID='BJ'
+			)
+		)
+	)
+);
+select * from T_CA_SAMPLE_RELA_FILE where SAMPLE_ID in(
+	select id from T_CA_SAMPLE where ASSESSMENT_POINT_ID in(
+		select id from T_CA_ASSESSMENT_RESULT where PROCESSURE_ID in(
+			select id from t_ic_processure where COMPANY_ID='BJ'
+		)
+	)
+);
+select * from T_CA_SAMPLE where ASSESSMENT_POINT_ID in(
+	select id from T_CA_ASSESSMENT_RESULT where PROCESSURE_ID in(
+		select id from t_ic_processure where COMPANY_ID='BJ'
+	)
+);
+select * from T_CA_ASSESSMENT_RESULT where PROCESSURE_ID in(
+	select id from t_ic_processure where COMPANY_ID='BJ'
+);
+select * from T_CA_PLAN_ASSESSMENT_POINT where PROCESSURE_ID in(
+	select id from t_ic_processure where COMPANY_ID='BJ'
+);
+
+select * from t_ic_processure where COMPANY_ID='BJ';

@@ -1,0 +1,29 @@
+[
+	{
+		"id" : "riskreport",
+		"text" : "风险报表",
+		"type" : "riskreport",
+		"iconCls" : "icon-ibm-new-group-view",
+		"expanded" : true,
+		"leaf" : false,
+		"children" : [
+			{
+				"id" : "riskview",
+				"text" : "风险分类概况",
+				"type" : "riskview",
+				"iconCls" : "icon-ibm-new-group-view",
+				"leaf" : true
+			},{
+				"id" : "riskduty",
+				"text" : "风险分类责任表",
+				"type" : "riskduty",
+				"iconCls" : "icon-ibm-new-group-view",
+				"leaf" : true
+			}
+		]
+	}
+
+
+
+
+]

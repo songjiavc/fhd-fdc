@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<process name="YearCheck" xmlns="http://jbpm.org/4.4/jpdl">
+   <start g="589,52,48,48" name="开始">
+      <transition to="考核计划制定"/>
+   </start>
+   <task assignee="#{planMakerEmpId}" form="FHD.view.check.yearcheck.plan.YearCheckFormMain" g="729,50,92,52" name="考核计划制定">
+     <description>{rate:{taskRate:0}}</description>
+      <transition to="主管领导考核计划审批"/>
+   </task>
+   <task assignee="#{riskMainLeader}" form="FHD.view.check.yearcheck.approver.YearCheckPlanApprover" g="942,50,133,52" name="主管领导考核计划审批">
+     <description>{rate:{taskRate:5}}</description>
+      <transition to="主管领导审批decision"/>
+   </task>
+	<decision g="987,154,48,41" name="主管领导审批decision">
+		<transition to="负责人考核计划审批">
+			<condition expr="#{path=='yes'}"/>
+		</transition>
+		<transition to="考核计划制定">
+			<condition expr="#{path=='no'}"/>
+		</transition>
+	</decision>
+   <task assignee="#{riskCharge}" form="FHD.view.check.yearcheck.approver.YearCheckPlanApproverForCharge" g="948,250,132,52" name="负责人考核计划审批">
+      <description>{rate:{taskRate:10,finishRate:70}}</description>
+      <transition to="负责人审批decision"/>
+   </task>
+    <decision g="990,337,48,48" name="负责人审批decision">
+      <transition to="考核计划制定">
+      <condition expr="#{path=='no'}"/>
+      </transition>
+      <transition to="复制打分表">
+       <condition expr="#{path=='yes'}"/>
+      </transition>
+   </decision>
+    <java  class="com.fhd.check.web.controller.yearcheck.checkYearController"  method="autoInsertScoreOrg" name="复制打分表" g="845,336,92,52">
+    	<arg>
+			<object expr="#{planId}"/>
+		</arg>
+      <transition to="foreach1"/>
+   </java>
+   <foreach g="751,343,48,48" in="#{raters}" name="foreach1" var="rater">
+      <transition to="考评打分"/>
+   </foreach>
+   <sub-process g="730,254,92,52" name="考评打分" sub-process-key="YearCheckSub">
+      <parameter-in subvar="startuserid" var="startuserid"/>
+      <parameter-in subvar="businessName" var="businessName"/>
+      <parameter-in subvar="businessId" var="businessId"/>
+      <parameter-in subvar="id" var="id"/>
+      <parameter-in subvar="name" var="name"/>
+      <parameter-in subvar="rater" var="rater"/>
+      <transition to="join1"/>
+   </sub-process>
+   
+    <join g="609,259,48,48" multiplicity="${joinCountForSon}" name="join1">
+      <transition to="汇总"/>
+   </join>
+    <task g="437,254,92,52" name="汇总">
+   <description>{rate:{taskRate:75}}</description>
+      <transition to="风险办主管领导审批"/>
+   </task>
+   <task g="713,403,125,52" name="风险办主管领导审批">
+   <description>{rate:{taskRate:85}}</description>
+      <transition to="exclusive4"/>
+   </task>
+   <decision g="604,403,48,48" name="exclusive4">
+      <transition to="汇总">
+      	<condition expr="#{path=='no'}"/>
+      </transition>
+      <transition to="风险办责任人审批">
+       	<condition expr="#{path=='yes'}"/>
+      </transition>
+   </decision>
+   <task g="421,398,130,52" name="风险办责任人审批">
+   <description>{rate:{taskRate:95}}</description>
+      <transition to="exclusive5"/>
+   </task>
+   <decision g="327,404,48,48" name="exclusive5">
+      <transition to="集团副总审批">
+       	<condition expr="#{path=='yes'}"/>
+      </transition>
+      <transition to="汇总">
+       	<condition expr="#{path=='no'}"/>
+      </transition>
+   </decision>
+   <task g="175,401,92,52" name="集团副总审批">
+   <description>{rate:{taskRate:99}}</description>
+      <transition to="exclusive6"/>
+   </task>
+   <decision g="41,404,48,48" name="exclusive6">
+      <transition to="end1">
+      	<condition expr="#{path=='yes'}"/>
+      </transition>
+      <transition g="63,282:" to="汇总">
+      	<condition expr="#{path=='no'}"/>
+      </transition>
+   </decision>
+   <end g="43,498,48,48" name="end1"/>
+
+
+  
+  
+</process>

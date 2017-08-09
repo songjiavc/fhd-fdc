@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<process name="responsePlan" xmlns="http://jbpm.org/4.4/jpdl">
+   <description>responseSimple</description>
+   <start g="32,134,46,46" name="start1">
+      <transition to="计划制定"/>
+   </start>
+   <!-- 计划制定 -->
+   <task assignee="#{makePlanEmpId}" form="FHD.view.response.workplan.workplanmake.WorkPlanMakeEditMain" g="129,130,200,50" name="计划制定">
+      <description>{rate:{taskRate:10}}</description>
+      <transition to="计划审批"/>
+   </task>
+   
+   <!-- 计划审批 -->
+   <task assignee="#{AssessPlanApproverEmpId}" form="FHD.view.response.workplan.workplanapprove.WorkPlanApproverSubmitMain" g="398,130,200,50" name="计划审批">
+      <description>{rate:{taskRate:20}}</description>
+      <transition to="计划审批decision"/>
+   </task>
+   <decision g="474,33,48,48" name="计划审批decision">
+      	<transition g="727,56:" to="承办人分配任务foreach">
+			<condition expr="#{path=='yes'}"/>
+		</transition>
+      	<transition g="229,57:" to="计划制定">
+			<condition expr="#{path=='no'}"/>
+		</transition>
+   </decision>
+   <foreach g="703,129,48,48" in="#{assessPlanTakers}" name="承办人分配任务foreach" var="assessPlanTaker">
+      <transition to="任务分配"/>
+   </foreach>
+   
+   <!-- 分配任务 -->
+   <task assignee="#{assessPlanTaker.planTakerEmpId}" form="FHD.view.response.workplan.workplantask.TaskMainpanel" g="897,128,200,50" name="任务分配">
+   	  <description>{rate:{taskRate:30,finishRate:100}}</description>
+      <transition to="方案制定"/>
+   </task>
+   
+   <!-- 方案制定 -->
+   <sub-process g="901,343,200,50" name="方案制定" sub-process-key="riskResponseSimpleSub">
+   	  <parameter-in subvar="startuserid" var="startuserid"/>
+      <parameter-in subvar="businessName" var="businessName"/>
+      <parameter-in subvar="businessId" var="businessId"/>
+      <parameter-in subvar="id" var="id"/>
+      <parameter-in subvar="name" var="name"/>
+      <transition to="join1"/>
+   </sub-process>
+   
+   <join g="717,344,48,48" multiplicity="#{assessPlanTakersJoinCount}" name="join1">
+     <transition to="汇总"/>
+   </join>
+   
+   <java class="com.fhd.ra.web.controller.response.execute.ResponseSolutionExecuteBpmControl" g="414,341,200,50" method="mergeResponsePlanStatus" name="汇总">
+		<arg>
+			<object expr="#{id}"/>
+		</arg>
+		<transition to="end1"/>
+	</java>
+	<end g="210,344,46,46" name="end1"/>
+</process>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<process name="riskIdentifyTotal" xmlns="http://jbpm.org/4.4/jpdl">
+   <description>complex</description>
+   <start g="27,28,48,48" name="start1">
+      <transition to="辨识计划制定"/>
+   </start>
+   
+   <!-- 计划制定 -->
+   <task assignee="#{makePlanEmpId}" form="FHD.view.risk.riskidentify.RiskIdentifyFormMain" g="100,25,208,52" name="辨识计划制定">
+      <description>{rate:{taskRate:0}}</description>
+      <transition to="辨识计划主管审批"/>
+   </task>
+   
+   <!-- 计划主管审批 -->
+   <task assignee="#{AssessPlanApproverEmpId}" form="FHD.view.risk.riskidentify.approve.RiskIdentifyApproveMain" g="381,23,208,52" name="辨识计划主管审批">
+      <description>{rate:{taskRate:10}}</description>
+      <transition to="辨识计划主管审批decision"/>
+   </task>
+   <decision g="179,132,48,48" name="辨识计划主管审批decision">
+      	<transition to="辨识计划领导审批">
+			<condition expr="#{path=='yes'}"/>
+		</transition>
+      	<transition to="辨识计划制定">
+			<condition expr="#{path=='no'}"/>
+		</transition>
+   </decision>
+   
+   <!-- 计划领导审批 -->
+   <task assignee="#{PlanDeptLeader}" form="FHD.view.risk.riskidentify.approveleader.RiskIdentifyApproveLeaderMain" g="383,113,208,52" name="辨识计划领导审批">
+      <description>{rate:{taskRate:20}}</description>
+      <transition to="辨识计划领导审批decision"/>
+   </task>
+   <decision g="653,24,48,48" name="辨识计划领导审批decision">
+      	<transition to="承办人分配任务foreach">
+			<condition expr="#{path=='yes'}"/>
+		</transition>
+      	<transition to="辨识计划主管审批">
+			<condition expr="#{path=='no'}"/>
+		</transition>
+   </decision>
+   
+   <foreach g="741,24,48,48" in="#{assessPlanTakers}" name="承办人分配任务foreach" var="assessPlanTaker">
+      <transition to="辨识任务分配"/>
+   </foreach>
+   
+   <!-- 分配任务 -->
+   <task assignee="#{assessPlanTaker.planTakerEmpId}" form="FHD.view.risk.riskidentify.taskset.RiskIdentifyTaskSetMain" g="825,21,240,52" name="辨识任务分配">
+   	  <description>{rate:{taskRate:30,finishRate:80}}</description>
+      <transition to="风险辨识"/>
+   </task>
+   
+   <!-- 风险辨识 -->
+   <sub-process g="839,200,214,52" name="风险辨识" sub-process-key="riskIdentifySub">
+   	  <parameter-in subvar="startuserid" var="startuserid"/>
+      <parameter-in subvar="businessName" var="businessName"/>
+      <parameter-in subvar="businessId" var="businessId"/>
+      <parameter-in subvar="id" var="id"/>
+      <parameter-in subvar="name" var="name"/>
+      <transition to="join1"/>
+   </sub-process>
+   
+   <join g="671,202,48,48" multiplicity="#{assessPlanTakersJoinCount}" name="join1">
+     <transition to="辨识结果整理"/>
+   </join>
+   
+   <!-- 辨识结果整理 -->
+   <task assignee="#{riskManagemer}" form="FHD.view.risk.riskidentify.tidy.IdentifyTidyMain" g="386,200,208,52" name="辨识结果整理">
+      <description>{rate:{taskRate:80}}</description>
+      <transition to="辨识风险部门主管审批"/>
+   </task>
+   
+   <!-- 风险部门主管审批 -->
+   <task assignee="#{approveFore}" form="FHD.view.risk.riskidentify.approvetidy.ApproveTidyFourMain" g="386,320,208,52" name="辨识风险部门主管审批">
+      <description>{rate:{taskRate:95}}</description>
+      <transition to="辨识风险部门主管审批decision"/>
+   </task>
+   <decision g="179,201,48,48" name="辨识风险部门主管审批decision">
+      	<transition to="辨识风险部门领导审批">
+			<condition expr="#{path=='yes'}"/>
+		</transition>
+      	<transition to="辨识结果整理">
+			<condition expr="#{path=='no'}"/>
+		</transition>
+   </decision>
+   
+   
+   <!-- 风险部门领导审批 -->
+   <task assignee="#{approveFive}" form="FHD.view.risk.riskidentify.approvetidy.ApproveTidyFiveMain" g="101,316,208,52" name="辨识风险部门领导审批">
+      <description>{rate:{taskRate:98}}</description>
+      <transition to="辨识风险部门领导审批decision"/>
+   </task>
+   <decision g="181,428,48,48" name="辨识风险部门领导审批decision">
+      	<transition to="end1">
+			<condition expr="#{path=='yes'}"/>
+		</transition>
+      	<transition to="辨识风险部门主管审批">
+			<condition expr="#{path=='no'}"/>
+		</transition>
+   </decision>
+
+   <end g="470,429,48,48" name="end1"/>
+</process>

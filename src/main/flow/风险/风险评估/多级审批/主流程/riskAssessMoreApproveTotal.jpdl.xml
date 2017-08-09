@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<process name="riskAssessTotal" xmlns="http://jbpm.org/4.4/jpdl">
+   <description>complex</description>
+   
+   <!-- 计划制定 -->
+   <start g="36,38,46,46" name="start1">
+      <transition to="评估计划制定"/>
+   </start>
+   <task assignee="#{makePlanEmpId}" form="FHD.view.risk.assess.formulatePlan.FormulatePlanMainPanel" g="124,36,200,50" name="评估计划制定">
+      <description>{rate:{taskRate:0}}</description>
+      <transition to="评估计划主管审批"/>
+   </task>
+   
+   <!-- 计划主管审批 -->
+   <task assignee="#{AssessPlanApproverEmpId}" form="FHD.view.risk.assess.planManagerApprove.PlanManagerApproveMain" g="381,23,208,52" name="评估计划主管审批">
+      <description>{rate:{taskRate:10}}</description>
+      <transition to="评估计划主管审批decision"/>
+   </task>
+   <decision g="201,137,48,48" name="评估计划主管审批decision">
+      	<transition to="评估计划领导审批">
+			<condition expr="#{path=='yes'}"/>
+		</transition>
+      	<transition to="评估计划制定">
+			<condition expr="#{path=='no'}"/>
+		</transition>
+   </decision>
+   
+   <!-- 计划领导审批 -->
+   <task assignee="#{PlanDeptLeader}" form="FHD.view.risk.assess.planLeadApprove.PlanLeadApproveMain" g="382,135,208,52" name="评估计划领导审批">
+      <description>{rate:{taskRate:20}}</description>
+      <transition to="评估计划领导审批decision"/>
+   </task>
+   <decision g="653,24,48,48" name="评估计划领导审批decision">
+      	<transition to="承办人分配任务foreach">
+			<condition expr="#{path=='yes'}"/>
+		</transition>
+      	<transition to="评估计划主管审批">
+			<condition expr="#{path=='no'}"/>
+		</transition>
+   </decision>
+   
+   <foreach g="773,24,48,48" in="#{assessPlanTakers}" name="承办人分配任务foreach" var="assessPlanTaker">
+      <transition to="评估任务分配"/>
+   </foreach>
+   
+   <!-- 任务分配 -->
+   <task assignee="#{assessPlanTaker.planTakerEmpId}" form="FHD.view.risk.assess.kpiSet.SetMainPanel" g="868,23,200,50" name="评估任务分配">
+   	  <description>{rate:{taskRate:30,finishRate:80}}</description>
+      <transition to="风险评估"/>
+   </task>
+   
+   <!-- 风险评估 -->
+   <sub-process g="869,199,200,50" name="风险评估" sub-process-key="riskAssessSub">
+   	  <parameter-in subvar="startuserid" var="startuserid"/>
+      <parameter-in subvar="businessName" var="businessName"/>
+      <parameter-in subvar="businessId" var="businessId"/>
+      <parameter-in subvar="id" var="id"/>
+      <parameter-in subvar="name" var="name"/>
+      <transition to="join1"/>
+   </sub-process>
+   
+   <join g="945,315,48,48" multiplicity="#{assessPlanTakersJoinCount}" name="join1">
+     <transition to="评估结果整理"/>
+   </join>
+   
+   <!-- 评估任务整理 -->
+   <task assignee="#{riskManagemer}" form="FHD.view.risk.assess.newAgainRiskTidy.NewRiskTidyMan" g="385,201,207,50" name="评估结果整理">
+      <description>{rate:{taskRate:80}}</description>
+      <transition to="评估风险部门主管审批"/>
+   </task>
+
+   <!-- 风险部门主管审批 -->
+   <task assignee="#{approveFore}" form="FHD.view.risk.assess.deptManagerApprove.DeptManagerApproveMain" g="387,317,208,52" name="评估风险部门主管审批">
+      <description>{rate:{taskRate:95}}</description>
+      <transition to="评估风险部门主管审批decision"/>
+   </task>
+   <decision g="197,201,48,48" name="评估风险部门主管审批decision">
+      	<transition to="评估风险部门领导审批">
+			<condition expr="#{path=='yes'}"/>
+		</transition>
+      	<transition to="评估结果整理">
+			<condition expr="#{path=='no'}"/>
+		</transition>
+   </decision>
+   
+   
+   <!-- 风险部门领导审批 -->
+   <task assignee="#{approveFive}" form="FHD.view.risk.assess.deptLeadApprove.DeptLeadApproveMain" g="115,316,208,52" name="评估风险部门领导审批">
+      <description>{rate:{taskRate:98}}</description>
+      <transition to="评估风险部门领导审批decision"/>
+   </task>
+   <decision g="194,428,48,48" name="评估风险部门领导审批decision">
+      	<transition to="end1">
+			<condition expr="#{path=='yes'}"/>
+		</transition>
+      	<transition to="评估风险部门主管审批">
+			<condition expr="#{path=='no'}"/>
+		</transition>
+   </decision>
+
+   <end g="627,425,46,46" name="end1"/>
+</process>

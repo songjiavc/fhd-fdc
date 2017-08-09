@@ -1,0 +1,37 @@
+[
+	{
+		"id": "all",
+		"text": "全部(100)",
+		"dbid": "all",
+		"leaf": false,
+		"code": "all",
+		"type": "all",
+		"expanded" : true,
+		"children" : [
+			{
+				"id": "saved",
+				"text": "<font color=red>"+"待提交(20)"+"</font>",
+				"dbid": "saved",
+				"leaf": true,
+				"code": "saved",
+				"type": "saved"
+			},
+			{
+				"id": "examine",
+				"text": "<font color=green>"+"审批中(20)"+"</font>",
+				"dbid": "examine",
+				"leaf": true,
+				"code": "examine",
+				"type": "examine"
+			},
+			{
+				"id": "archived",
+				"text": "已归档(50)",
+				"dbid": "archived",
+				"leaf": true,
+				"code": "archived",
+				"type": "archived"
+			}
+		]
+	}
+]

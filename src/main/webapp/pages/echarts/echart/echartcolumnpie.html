@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>ECharts</title>
+    <!-- 引入 echarts.js -->
+    <script src="source/echarts.js"></script>
+</head>
+<body>
+<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+<div id="columnpie" style="width: 1100px;height:450px;"></div>
+<script type="text/javascript">
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('columnpie'));
+
+    // 指定图表的配置项和数据
+    //数据
+    var dataMap = {};
+    function dataFormatter(obj) {
+        var pList = ['产品研制','技术管理','技改管理','器材采购管理','零部件采购','生产制造','设备管理','质量管理','试飞','军品销售','售后服务'];
+        var temp;
+        for (var year = 2007; year <= 2016; year++) {
+            var max = 0;
+            var sum = 0;
+            temp = obj[year];
+            for (var i = 0, l = temp.length; i < l; i++) {
+                max = Math.max(max, temp[i]);
+                sum += temp[i];
+                obj[year][i] = {
+                    name : pList[i],
+                    value : temp[i]
+                }
+            }
+            obj[year + 'max'] = Math.floor(max     / 100) * 100;
+            obj[year + 'sum'] = sum;
+        }
+        return obj;
+    }
+
+    dataMap.dataGDP = dataFormatter({
+        //max : 60000,
+        2016:[16,11,24,11,14,22,10,12,19,49,32],
+        2015:[14,92,20,92,11,18,86,103,17,41,27],
+        2014:[12,75,17,73,97,15,72,85,15,34,22],
+        2013:[11,67,16,73,84,13,64,83,14,30,21],
+        2012:[98,52,13,60,64,11,52,71,12,26,18],
+        2011:[81,44,11,48,49,93,42,62,10,21,15],
+        2010:[69,39,10,42,30,80,36,55,92,18,13],
+        2009:[60,31,84,35,30,66,31,47,80,15,11],
+        2008:[50,25,69,28,23,60,26,40,66,12,97],
+        2007:[43,21,60,23,19,54,23,36,57,10,80]
+    });
+
+    dataMap.dataPI = dataFormatter({
+        //max : 4000,
+        2016:[13,15,29,64,13,19,12,17,12,30,15],
+        2015:[12,14,25,55,10,16,10,13,11,25,13],
+        2014:[11,12,22,47,92,14,98,11,11,22,11],
+        2013:[11,12,20,31,90,13,91,10,11,21,10],
+        2012:[10,11,18,31,76,11,78,91,10,18,98],
+        2011:[88,10,14,27,63,93,67,75,93,15,92],
+        2010:[88,11,14,26,58,88,62,68,90,14,89],
+        2009:[87,10,13,27,52,79,56,60,83,13,81],
+        2008:[84.11,89,10,21,42,61,48,50,81,11],
+        2007:[82,84,95,19,37,59,44,47,79,11,68]
+    });
+
+    dataMap.dataSI = dataFormatter({
+        //max : 26600,
+        2016:[37,59,13,66,80,12,56,59,79,25,16],
+        2015:[33,48,10,52,63,99,45,50,72,21,14],
+        2014:[28,39,89,39,51,79,35,40,60,18,11],
+        2013:[26,37,87,42,43,71,30,43,60,16,11],
+        2012:[25,28,72,34,31,55,24,36,55,14,10],
+        2011:[21,24,61,27,23,45,19,33,49,12,85],
+        2010:[20,21,52,23,17,38,15,29,43,10,71],
+        2009:[18,16,43,19,12,30,13,24,38,84,62],
+        2008:[14,13,34,14,96,28,10,20,32,67,50],
+        2007:[12,10,29,11,75,26,94,18,26,56,40]
+    });
+
+    dataMap.dataTI = dataFormatter({
+        //max : 25000,
+        2016:[12,52,84,39,50,81,36,49,11,20,14],
+        2015:[10,42,71,34,42,68,31,40,98,17,12],
+        2014:[91,34,60,28,36,58,27,33,89,13,99],
+        2013:[83,28,52,27,32,52,24,29,78,11,87],
+        2012:[72,22,46,22,24,44,20,24,68,97,76],
+        2011:[58,19,38,18,19,37,16,20,55,79,62],
+        2010:[48,16,33,16,15,32,14,18,47,66,53],
+        2009:[40,13,28,13,12,28,12,16,40,51,45],
+        2008:[34,11,24,11,10,24,10,14,34,44,38],
+        2007:[29,99,21,99,81,22,95,13,30,38,32]
+    });
+
+    dataMap.dataEstate = dataFormatter({
+        //max : 3600,
+        2016:[10,41,91,22,38,87,23,49,10,27,16],
+        2015:[10,37,69,19,30,73,21,39,10,26,16],
+        2014:[10,30,61,17,28,60,20,30,12,20,13],
+        2013:[84,22,51,16,27,50,18,24,93,16,10],
+        2012:[82,18,46,13,19,41,15,22,95,13,98],
+        2011:[65,15,39,11,13,31,13,19,77,10,79],
+        2010:[49,12,33,10.75,25,11,16,71,79,68],
+        2009:[43,10,23,95,73,20,97,13,66,53,58],
+        2008:[34,92,18,78,61,18,91,12,48,44,47],
+        2007:[29,73,14,65,51,13,76,11,38,37,36]
+    });
+
+    dataMap.dataFinancial = dataFormatter({
+        //max : 3200,
+        2016:[22,75,74,51,44,75,20,37,22,26,27],
+        2015:[18,57,61,44,34,63,19,30,19,21,23],
+        2014:[16,46,52,36,29,56,18,22,18,15,18],
+        2013:[15,36,42,29,21,45,14,17,14,12,16],
+        2012:[13,28,34,21,14,38,12,15,12,10,12],
+        2011:[98,18,28,16,10,30,10,74,82,65,90],
+        2010:[84,14,21,13,72,23,83,35,67,49,68],
+        2009:[71,13,20,11,55,18,77,32,61,44,25],
+        2008:[63,11,19,11,55,14,73,32,51,39,45],
+        2007:[56,76,17,12,48,13,75,31,48,36,34]
+    });
+
+    //图表配置项
+    option = {
+        baseOption: {
+            color:['#D8BFD8','#F08080','#87CEFA','#FFA07A','#6495ED','#FFD700'],
+            timeline: {
+                // y: 0,
+                axisType: 'category',
+                // realtime: false,
+                // loop: false,
+                autoPlay: true,
+                // currentIndex: 2,
+                playInterval: 1000,
+                // controlStyle: {
+                //     position: 'left'
+                // },
+                data: [
+                    '2007-01-01','2008-01-01','2009-01-01',
+                    {
+                        value: '2010-01-01',
+                        tooltip: {
+                            formatter: '{b} 风险发生可能性达到一个新的高度'
+                        },
+                        symbol: 'diamond',
+                        symbolSize: 16
+                    },
+                    '2011-01-01', '2012-01-01','2013-01-01','2014-01-01','2015-01-01',
+                    {
+                        value: '2016-01-01',
+                        tooltip: {
+                            formatter: function (params) {
+                                return params.name + '风险总数有所下降';
+                            }
+                        },
+                        symbol: 'diamond',
+                        symbolSize: 18
+                    },
+                ],
+                label: {
+                    formatter : function(s) {
+                        return (new Date(s)).getFullYear();
+                    }
+                }
+            },
+            title: {
+                subtext: '数据来自沈飞集团'
+            },
+            tooltip: {},
+            legend: {
+                x: 'right',
+                data: ['资金管理风险', '操作风险', '流动性风险', '质量风险', '战略风险', '生产计划风险'],
+                selected: {
+                    '资金管理风险': false, '操作风险': false, '流动性风险': false
+                }
+            },
+            calculable : true,
+            grid: {
+                top: 80,
+                bottom: 100
+            },
+            xAxis: [
+                {
+                    'type':'category',
+                    'axisLabel':{'interval':0},
+                    'data':[
+                        '产品研制','\n技术管理','技改管理','\n器材采购管理','零部件采购','\n生产制造','设备管理','\n质量管理',
+                        '试飞','\n军品销售','售后服务'
+                    ],
+                    splitLine: {show: false}
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value',
+                    name: '风险数量'
+                }
+            ],
+            series: [
+                {name: '资金管理风险', type: 'bar'},
+                {name: '操作风险', type: 'bar'},
+                {name: '流动性风险', type: 'bar'},
+                {name: '质量风险', type: 'bar'},
+                {name: '战略风险', type: 'bar'},
+                {name: '生产计划风险', type: 'bar'},
+                {
+                    name: '风险占比',
+                    type: 'pie',
+                    center: ['75%', '25%'],
+                    radius: '30%'
+                }
+            ]
+        },
+        options: [
+            {
+                title: {text: '2007公司风险指标'},
+                series: [
+                    {data: dataMap.dataGDP['2007']},
+                    {data: dataMap.dataFinancial['2007']},
+                    {data: dataMap.dataEstate['2007']},
+                    {data: dataMap.dataPI['2007']},
+                    {data: dataMap.dataSI['2007']},
+                    {data: dataMap.dataTI['2007']},
+                    {data: [
+                        {name: '质量风险', value: dataMap.dataPI['2007sum']},
+                        {name: '战略风险', value: dataMap.dataSI['2007sum']},
+                        {name: '生产计划风险', value: dataMap.dataTI['2007sum']}
+                    ]}
+                ]
+            },
+            {
+                title : {text: '2008公司风险指标'},
+                series : [
+                    {data: dataMap.dataGDP['2008']},
+                    {data: dataMap.dataFinancial['2008']},
+                    {data: dataMap.dataEstate['2008']},
+                    {data: dataMap.dataPI['2008']},
+                    {data: dataMap.dataSI['2008']},
+                    {data: dataMap.dataTI['2008']},
+                    {data: [
+                        {name: '质量风险', value: dataMap.dataPI['2008sum']},
+                        {name: '战略风险', value: dataMap.dataSI['2008sum']},
+                        {name: '生产计划风险', value: dataMap.dataTI['2008sum']}
+                    ]}
+                ]
+            },
+            {
+                title : {text: '2009公司风险指标'},
+                series : [
+                    {data: dataMap.dataGDP['2009']},
+                    {data: dataMap.dataFinancial['2009']},
+                    {data: dataMap.dataEstate['2009']},
+                    {data: dataMap.dataPI['2009']},
+                    {data: dataMap.dataSI['2009']},
+                    {data: dataMap.dataTI['2009']},
+                    {data: [
+                        {name: '质量风险', value: dataMap.dataPI['2009sum']},
+                        {name: '战略风险', value: dataMap.dataSI['2009sum']},
+                        {name: '生产计划风险', value: dataMap.dataTI['2009sum']}
+                    ]}
+                ]
+            },
+            {
+                title : {text: '2010公司风险指标'},
+                series : [
+                    {data: dataMap.dataGDP['2010']},
+                    {data: dataMap.dataFinancial['2010']},
+                    {data: dataMap.dataEstate['2010']},
+                    {data: dataMap.dataPI['2010']},
+                    {data: dataMap.dataSI['2010']},
+                    {data: dataMap.dataTI['2010']},
+                    {data: [
+                        {name: '质量风险', value: dataMap.dataPI['2010sum']},
+                        {name: '战略风险', value: dataMap.dataSI['2010sum']},
+                        {name: '生产计划风险', value: dataMap.dataTI['2010sum']}
+                    ]}
+                ]
+            },
+            {
+                title : {text: '2011公司风险指标'},
+                series : [
+                    {data: dataMap.dataGDP['2011']},
+                    {data: dataMap.dataFinancial['2011']},
+                    {data: dataMap.dataEstate['2011']},
+                    {data: dataMap.dataPI['2011']},
+                    {data: dataMap.dataSI['2011']},
+                    {data: dataMap.dataTI['2011']},
+                    {data: [
+                        {name: '质量风险', value: dataMap.dataPI['2011sum']},
+                        {name: '战略风险', value: dataMap.dataSI['2011sum']},
+                        {name: '生产计划风险', value: dataMap.dataTI['2011sum']}
+                    ]}
+                ]
+            },
+            {
+                title : {text: '2012公司风险指标'},
+                series : [
+                    {data: dataMap.dataGDP['2012']},
+                    {data: dataMap.dataFinancial['2012']},
+                    {data: dataMap.dataEstate['2012']},
+                    {data: dataMap.dataPI['2012']},
+                    {data: dataMap.dataSI['2012']},
+                    {data: dataMap.dataTI['2012']},
+                    {data: [
+                        {name: '质量风险', value: dataMap.dataPI['2012sum']},
+                        {name: '战略风险', value: dataMap.dataSI['2012sum']},
+                        {name: '生产计划风险', value: dataMap.dataTI['2012sum']}
+                    ]}
+                ]
+            },
+            {
+                title : {text: '2013公司风险指标'},
+                series : [
+                    {data: dataMap.dataGDP['2013']},
+                    {data: dataMap.dataFinancial['2013']},
+                    {data: dataMap.dataEstate['2013']},
+                    {data: dataMap.dataPI['2013']},
+                    {data: dataMap.dataSI['2013']},
+                    {data: dataMap.dataTI['2013']},
+                    {data: [
+                        {name: '质量风险', value: dataMap.dataPI['2013sum']},
+                        {name: '战略风险', value: dataMap.dataSI['2013sum']},
+                        {name: '生产计划风险', value: dataMap.dataTI['2013sum']}
+                    ]}
+                ]
+            },
+            {
+                title : {text: '2014公司风险指标'},
+                series : [
+                    {data: dataMap.dataGDP['2014']},
+                    {data: dataMap.dataFinancial['2014']},
+                    {data: dataMap.dataEstate['2014']},
+                    {data: dataMap.dataPI['2014']},
+                    {data: dataMap.dataSI['2014']},
+                    {data: dataMap.dataTI['2014']},
+                    {data: [
+                        {name: '质量风险', value: dataMap.dataPI['2014sum']},
+                        {name: '战略风险', value: dataMap.dataSI['2014sum']},
+                        {name: '生产计划风险', value: dataMap.dataTI['2014sum']}
+                    ]}
+                ]
+            },
+            {
+                title : {text: '2015公司风险指标'},
+                series : [
+                    {data: dataMap.dataGDP['2015']},
+                    {data: dataMap.dataFinancial['2015']},
+                    {data: dataMap.dataEstate['2015']},
+                    {data: dataMap.dataPI['2015']},
+                    {data: dataMap.dataSI['2015']},
+                    {data: dataMap.dataTI['2015']},
+                    {data: [
+                        {name: '质量风险', value: dataMap.dataPI['2015sum']},
+                        {name: '战略风险', value: dataMap.dataSI['2015sum']},
+                        {name: '生产计划风险', value: dataMap.dataTI['2015sum']}
+                    ]}
+                ]
+            },
+            {
+                title : {text: '2016公司风险指标'},
+                series : [
+                    {data: dataMap.dataGDP['2016']},
+                    {data: dataMap.dataFinancial['2016']},
+                    {data: dataMap.dataEstate['2016']},
+                    {data: dataMap.dataPI['2016']},
+                    {data: dataMap.dataSI['2016']},
+                    {data: dataMap.dataTI['2016']},
+                    {data: [
+                        {name: '质量风险', value: dataMap.dataPI['2016sum']},
+                        {name: '战略风险', value: dataMap.dataSI['2016sum']},
+                        {name: '生产计划风险', value: dataMap.dataTI['2016sum']}
+                    ]}
+                ]
+            }
+        ]
+    };
+
+
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+</script>
+</body>
+</html>

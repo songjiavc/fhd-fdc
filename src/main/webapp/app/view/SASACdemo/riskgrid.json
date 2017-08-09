@@ -1,0 +1,7 @@
+{datas:[
+	{riskKind:'战略风险',riskname:'政策风险',inValue:"<img src=\'images/kpi/cockpit/high.gif\' />"},
+	{riskKind:'战略风险',riskname:'宏观经济风险',inValue:"<img src=\'images/kpi/cockpit/mid.gif\' />"},
+	{riskKind:'运营风险',riskname:'投资风险',inValue:"<img src=\'images/kpi/cockpit/high.gif\' />"},
+	{riskKind:'运营风险',riskname:'项目建设风险',inValue:"<img src=\'images/kpi/cockpit/mid.gif\' />"},
+	{riskKind:'市场风险',riskname:'材料价格风险',inValue:"<img src=\'images/kpi/cockpit/high.gif\' />"}
+	],totalCount:5}

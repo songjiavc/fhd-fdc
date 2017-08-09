@@ -1,0 +1,17 @@
+[
+{
+	"personInCharge" : "邢军",
+	"executeDetail" : "制定生产计划制定流程",
+	"percent" : "20%",
+	"status" : "已保存",
+	"createTime" : "2012-08-25"
+	
+},
+{
+	"personInCharge" : "邢军",
+	"executeDetail" : "跟踪计划执行情况",
+	"percent" : "50%",
+	"status" : "已保存",
+	"createTime" : "2013-01-15"
+}
+]

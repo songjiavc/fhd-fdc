@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<process name="riskAssessSub" xmlns="http://jbpm.org/4.4/jpdl">
+   <on event="start">
+      <event-listener class="com.fhd.ra.business.assess.formulateplan.AssessEmpEventListener"/>
+   </on>
+   
+   <description>complex</description>
+   <start g="83,25,48,48" name="start1">
+      	<transition to="椋庨櫓璇勪及foreach"/> 
+   </start>
+   <foreach g="181,24,48,48" in="#{riskTaskEvaluators}" name="椋庨櫓璇勪及foreach" var="riskTaskEvaluator">
+      	<transition to="椋庨櫓璇勪及"/>
+   </foreach>
+   
+   <!-- 椋庨櫓璇勪及 -->
+   <task assignee="#{riskTaskEvaluator.riskTaskEvaluatorId}" form="FHD.view.risk.assess.quaAssess.QuaAssessMan" g="265,23,208,52" name="椋庨櫓璇勪及">
+   	  	<description>{rate:{taskRate:40,finishRate:50,parentFinishRate:80}}</description>
+      	<transition to="join2"/>
+   </task>
+   
+   <join g="346,112,48,48" multiplicity="#{joinCount}" name="join2">
+      <transition to="璇勪及浠诲姟瀹℃壒"/>
+   </join>
+   
+   <!-- 璇勪及浠诲姟瀹℃壒 -->
+   <task assignee="#{approvePerson}" form="FHD.view.risk.assess.AssessApproveSubmit" g="267,205,208,52" name="璇勪及浠诲姟瀹℃壒">
+		<description>{rate:{taskRate:50,finishRate:80}}</description>
+      	<transition to="璇勪及鍗曚綅涓荤瀹℃壒"/>
+   </task>
+   
+   <!-- 鍗曚綅涓荤瀹℃壒 -->
+   <task assignee="#{approveOne}" form="FHD.view.risk.assess.companyManagerApprove.CompanyManagerApproveMain" g="507,208,208,52" name="璇勪及鍗曚綅涓荤瀹℃壒">
+      <description>{rate:{taskRate:60,finishRate:80}}</description>
+      <transition to="璇勪及鍗曚綅涓荤瀹℃壒decision"/>
+   </task>
+   <decision g="344,301,48,48" name="璇勪及鍗曚綅涓荤瀹℃壒decision">
+      	<transition to="璇勪及鍗曚綅棰嗗瀹℃壒">
+			<condition expr="#{path=='yes'}"/>
+		</transition>
+      	<transition to="璇勪及浠诲姟瀹℃壒">
+			<condition expr="#{path=='no'}"/>
+		</transition>
+   </decision>
+   
+   <!-- 鍗曚綅棰嗗瀹℃壒 -->
+   <task assignee="#{approveTwo}" form="FHD.view.risk.assess.companyLeadApprove.CompanyLeadApproveMain" g="743,299,208,52" name="璇勪及鍗曚綅棰嗗瀹℃壒">
+      <description>{rate:{taskRate:65,finishRate:80}}</description>
+      <transition to="璇勪及鍗曚綅棰嗗瀹℃壒decision"/>
+   </task>
+   <decision g="587,112,48,48" name="璇勪及鍗曚綅棰嗗瀹℃壒decision">
+      	<transition to="璇勪及涓氬姟鍒嗙鍓�诲鎵�">
+			<condition expr="#{path=='yes'}"/>
+		</transition>
+      	<transition to="璇勪及鍗曚綅涓荤瀹℃壒">
+			<condition expr="#{path=='no'}"/>
+		</transition>
+   </decision>
+   
+   
+   <!-- 涓氬姟鍒嗙鍓�诲鎵� -->
+   <task assignee="#{approveThree}" form="FHD.view.risk.assess.presidentApprove.PresidentApproveMain" g="506,20,208,52" name="璇勪及涓氬姟鍒嗙鍓�诲鎵�">
+      <description>{rate:{taskRate:70,finishRate:80}}</description>
+      <transition to="璇勪及涓氬姟鍒嗙鍓�诲鎵筪ecision"/>
+   </task>
+   <decision g="822,22,48,48" name="璇勪及涓氬姟鍒嗙鍓�诲鎵筪ecision">
+      	<transition to="end1">
+			<condition expr="#{path=='yes'}"/>
+		</transition>
+      	<transition to="璇勪及鍗曚綅棰嗗瀹℃壒">
+			<condition expr="#{path=='no'}"/>
+		</transition>
+   </decision>
+   
+   <end g="923,23,48,59" name="end1"/>
+   <script name="script1" g="366,465,92,52"/>
+</process>

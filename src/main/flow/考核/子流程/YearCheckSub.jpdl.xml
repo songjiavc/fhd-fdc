@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<process name="YearCheckSub" xmlns="http://jbpm.org/4.4/jpdl">
+   <on event="start">
+      <event-listener class="com.fhd.check.business.yearcheck.YearCheckMarkListen"/>
+   </on>
+   <start g="384,31,48,48" name="开始">
+      <transition to="单位自评"/>
+   </start>
+   <task assignee="#{rater.id}" form="FHD.view.check.yearcheck.mark.YearCheckOwenMarkMainPanal" g="756,28,92,52" name="单位自评">
+      <transition to="自评单位领导审批"/>
+           <description>{rate:{taskRate:15}}</description>
+   </task>
+   <task assignee="#{raterLeader}" form="FHD.view.check.yearcheck.approver.YearCheckPlanOwenMarkApprover" g="934,28,118,52" name="自评单位领导审批">
+      <transition to="exclusive1"/>
+   </task>
+   <decision g="974,136,48,48" name="exclusive1">
+      <transition to="自评单位负责人审批">
+      	<condition expr="#{path=='yes'}"/>
+      </transition>
+      <transition to="单位自评">
+      	<condition expr="#{path=='no'}"/>
+      </transition>
+   </decision>
+   <task assignee="#{raterCharge}" form="FHD.view.check.yearcheck.approver.YearCheckPlanOwenMarkApproverForCharge" g="935,235,129,52" name="自评单位负责人审批">
+      <description>{rate:{taskRate:20,finishRate:70}}</description>
+      <transition to="exclusive2"/>
+   </task>
+ 
+   <decision g="783,235,48,48" name="exclusive2">
+      <transition to="单位自评">
+      	<condition expr="#{path=='no'}"/>
+      </transition>
+      <transition to="fork1">
+      	<condition expr="#{path=='yes'}"/>
+      </transition>
+   </decision>
+   <fork g="679,231,48,48" name="fork1">
+      <transition g="702,378:" to="风险办评分"/>
+      <transition to="审计处评分" g="702,144:"/>
+   </fork>
+   <task assignee="#{riskManagerEmpId}" g="377,347,92,52" name="风险办评分">
+      <transition g="155,371:" to="join1"/>
+   </task>
+      <task name="审计处评分" g="572,121,92,50">
+      <transition to="审计处领导评分"/>
+   </task>
+      <task assignee="${auditManager}" g="441,118,85,52" name="审计处领导评分">
+      <transition to="exclusive3"/>
+   </task>
+   <decision g="369,121,48,48" name="exclusive3">
+      <transition to="审计处负责人评分">
+      <condition expr="#{path=='yes'}"/>
+      </transition>
+      <transition to="审计处评分" g="394,92;618,93:">
+       <condition expr="#{path=='no'}"/>
+      </transition>
+   </decision>
+ <task assignee="${auditCharge}" g="237,119,103,52" name="审计处负责人评分">
+      <transition to="exclusive4"/>
+   </task>
+      <decision g="131,124,48,48" name="exclusive4">
+      <transition to="join1">
+       <condition expr="#{path=='yes'}"/>
+      </transition>
+      <transition to="审计处评分" g="157,234;619,235:">
+      <condition expr="#{path=='no'}"/>
+      </transition>
+   </decision>
+   <join g="132,234,48,48" multiplicity="#{checkCount}" name="join1">
+      <transition to="end1"/>
+   </join>
+   <end g="18,234,48,48" name="end1"/>
+
+</process>

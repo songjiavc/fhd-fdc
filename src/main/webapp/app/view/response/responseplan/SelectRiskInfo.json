@@ -1,0 +1,53 @@
+[
+
+{
+	"id" : "1",
+	"riskClass":"运营风险",
+	"riskName":"生产计划编排不完整或不合理，影响生产效率",
+	"riskDesc":"生产计划编排不完整或不合理，影响生产效率",
+	"orgOr"   : "生产管理部",
+	"orgRela"   : "内控部",
+	"assessTime" : "2013-08-01",
+	"status" : "icon-ibm-symbol-4-sm"
+},
+{
+	"id" : "2",
+	"riskClass":"运营风险",
+	"riskName":"车间人力、设备、工艺装备、图纸到位情况、生产面积等资源不足，导致无法完成生产计划，影响全年生产任务交付",
+	"riskDesc":"车间人力、设备、工艺装备、图纸到位情况、生产面积等资源不足，导致无法完成生产计划，影响全年生产任务交付",
+	"orgOr"   : "生产管理部",
+	"orgRela"   : "内控部",
+	"assessTime" : "2012-08-01",
+	"status" : "icon-ibm-symbol-4-sm"
+},
+{
+	"id" : "3",
+	"riskClass":"运营风险",
+	"riskName":"车间提外委申请时间较晚，导致进度较急",
+	"riskDesc":"车间提外委申请时间较晚，导致进度较急",
+	"orgOr"   : "生产管理部",
+	"orgRela"   : "内控部",
+	"assessTime" : "2012-12-01",
+	"status" : "icon-ibm-symbol-4-sm"
+},
+{
+	"id" : "4",
+	"riskClass":"运营风险",
+	"riskName":"材料或图纸数模发放错误，导致零件加工有误，影响产品质量及生产进度",
+	"riskDesc":"材料或图纸数模发放错误，导致零件加工有误，影响产品质量及生产进度",
+	"orgOr"   : "生产管理部",
+	"orgRela"   : "内控部",
+	"assessTime" : "2012-12-01",
+	"status" : "icon-ibm-symbol-4-sm"
+},
+{
+	"id" : "5",
+	"riskClass":"运营风险",
+	"riskName":"外委生产产品质量不符合公司要求，导致生产进度受到影响",
+	"riskDesc":"外委生产产品质量不符合公司要求，导致生产进度受到影响",
+	"orgOr"   : "生产管理部",
+	"orgRela"   : "内控部",
+	"assessTime" : "2012-12-01",
+	"status" : "icon-ibm-symbol-4-sm"
+}
+]

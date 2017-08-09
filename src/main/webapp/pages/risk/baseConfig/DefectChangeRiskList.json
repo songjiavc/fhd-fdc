@@ -1,0 +1,94 @@
+[
+{
+	"code" : "0.0~0.2",
+	"name" : "一般缺陷",
+	"type" : "0~1",
+	"targetStartDate" : "0~3"
+	
+	
+},
+{ 	
+	"code" : "0.0~0.2",
+	"name" : "重要缺陷",
+	"type" : "0~1",
+	"targetStartDate" : "4~5"
+},
+{ 	
+	"code" : "0.0~0.2",
+	"name" : "重大缺陷",
+	"type" : "0~1",
+	"targetStartDate" : "4~5"
+},
+{ 	
+	"code" : "0.2~0.4",
+	"name" : "一般缺陷",
+	"type" : "1~2",
+	"targetStartDate" : "0~2"
+},
+{ 	
+	"code" : "0.2~0.4",
+	"name" : "重要缺陷",
+	"type" : "1~2",
+	"targetStartDate" : "2~5"
+},
+{ 	
+	"code" : "0.2~0.4",
+	"name" : "重大缺陷",
+	"type" : "1~2",
+	"targetStartDate" : "2~5"
+},
+{ 	
+	"code" : "0.4~0.6",
+	"name" : "一般缺陷",
+	"type" : "2~3",
+	"targetStartDate" : "0~1"
+},
+{ 	
+	"code" : "0.4~0.6",
+	"name" : "重要缺陷",
+	"type" : "2~3",
+	"targetStartDate" : "1~4"
+},
+{ 	
+	"code" : "0.4~0.6",
+	"name" : "重大缺陷",
+	"type" : "2~3",
+	"targetStartDate" : "4~5"
+},
+{ 	
+	"code" : "0.6~0.8",
+	"name" : "一般缺陷",
+	"type" : "3~4",
+	"targetStartDate" : "0~3"
+},
+{ 	
+	"code" : "0.6~0.8",
+	"name" : "重要缺陷",
+	"type" : "3~4",
+	"targetStartDate" : "0~3"
+},
+{ 	
+	"code" : "0.6~0.8",
+	"name" : "重大缺陷",
+	"type" : "3~4",
+	"targetStartDate" : "3~5"
+},
+{ 	
+	"code" : "0.8~1.0",
+	"name" : "一般缺陷",
+	"type" : "4~5",
+	"targetStartDate" : "0~2"
+},
+{ 	
+	"code" : "0.8~1.0",
+	"name" : "重要缺陷",
+	"type" : "4~5",
+	"targetStartDate" : "0~2"
+},
+{ 	
+	"code" : "0.8~1.0",
+	"name" : "重大缺陷",
+	"type" : "4~5",
+	"targetStartDate" : "2~5"
+}
+]

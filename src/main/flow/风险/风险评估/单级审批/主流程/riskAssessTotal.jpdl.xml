@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<process name="riskAssessTotalDept" xmlns="http://jbpm.org/4.4/jpdl">
+   <description>simple</description>
+   
+   <!-- 计划制定 -->
+   <start g="186,24,46,46" name="start1">
+      <transition to="评估计划制定"/>
+   </start>
+   <task assignee="#{makePlanEmpId}" form="FHD.view.risk.planconformNew.deptFlow.FormulatePlanMainPanel" g="359,22,200,50" name="评估计划制定">
+      <description>{rate:{taskRate:0}}</description>
+      <transition to="评估计划审批"/>
+   </task>
+   
+   <!-- 计划审批 -->
+   <task assignee="#{AssessPlanApproverEmpId}" form="FHD.view.risk.assess.formulatePlan.FormulateApproverSubmitMain" g="609,22,200,50" name="评估计划审批">
+      <description>{rate:{taskRate:15}}</description>
+      <transition to="评估计划审批decision"/>
+   </task>
+   <decision g="685,98,48,48" name="评估计划审批decision">
+      <transition g="457,202:" to="评估计划制定">
+			<condition expr="#{path=='no'}"/>
+		</transition>
+      	<transition to="承办人分配任务foreach">
+			<condition expr="#{path=='yes'}"/>
+		</transition>
+   </decision>
+   
+   <foreach g="685,198,48,48" in="#{assessPlanTakers}" name="承办人分配任务foreach" var="assessPlanTaker">
+      <transition to="评估任务分配"/>
+   </foreach>
+   
+   <!-- 任务分配 -->
+   <task assignee="#{assessPlanTaker.planTakerEmpId}" form="FHD.view.risk.assess.kpiSet.SetMainPanel" g="359,197,200,50" name="评估任务分配">
+   	  <description>{rate:{taskRate:30,finishRate:80}}</description>
+      <transition to="风险评估"/>
+   </task>
+   
+   <!-- 风险评估 -->
+   <sub-process g="109,197,200,50" name="风险评估" sub-process-key="riskAssessSubDept">
+   	  <parameter-in subvar="startuserid" var="startuserid"/>
+      <parameter-in subvar="businessName" var="businessName"/>
+      <parameter-in subvar="businessId" var="businessId"/>
+      <parameter-in subvar="id" var="id"/>
+      <parameter-in subvar="name" var="name"/>
+      <transition to="join1"/>
+   </sub-process>
+   
+   <join g="185,348,48,48" multiplicity="#{assessPlanTakersJoinCount}" name="join1">
+     <transition to="评估结果整理"/>
+   </join>
+   
+   <!-- 评估结果整理 -->
+   <task assignee="#{riskManagemer}" form="FHD.view.risk.assess.newAgainRiskTidy.NewRiskTidyMan" g="359,347,200,50" name="评估结果整理">
+      <description>{rate:{taskRate:80}}</description>
+      <transition to="end1"/>
+   </task>
+
+   <end g="686,347,46,46" name="end1"/>
+</process>

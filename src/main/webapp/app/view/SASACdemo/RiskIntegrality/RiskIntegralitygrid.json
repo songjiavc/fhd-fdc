@@ -1,0 +1,12 @@
+[
+	{riskName:'投资风险',riskStatus:'<img src=\'images/kpi/cockpit/high.gif\' />',event:'中石油集团风险事件'},
+	{riskName:'投资风险',riskStatus:'<img src=\'images/kpi/cockpit/high.gif\' />',event:'中石化集团风险事件'},
+	{riskName:'现金流风险',riskStatus:'<img src=\'images/kpi/cockpit/mid.gif\' />',event:'五矿集团风险事件'},
+	{riskName:'健康安全环保风险',riskStatus:'<img src=\'images/kpi/cockpit/low.gif\' />',event:'中冶集团风险事件'},
+	{riskName:'健康安全环保风险',riskStatus:'<img src=\'images/kpi/cockpit/low.gif\' />',event:'中海油集团风险事件'},
+	{riskName:'健康安全环保风险',riskStatus:'<img src=\'images/kpi/cockpit/low.gif\' />',event:'中石油集团风险事件'},
+	{riskName:'人力资源风险',riskStatus:'<img src=\'images/kpi/cockpit/mid.gif\' />',event:'五矿集团风险事件'},
+	{riskName:'政策风险',riskStatus:'<img src=\'images/kpi/cockpit/high.gif\' />',event:'中石油集团风险事件'},
+	{riskName:'竞争风险',riskStatus:'<img src=\'images/kpi/cockpit/mid.gif\' />',event:'中石化集团风险事件'},
+	{riskName:'竞争风险',riskStatus:'<img src=\'images/kpi/cockpit/mid.gif\' />',event:'中冶集团风险事件'}
+]

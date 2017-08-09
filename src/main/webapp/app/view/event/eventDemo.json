@@ -1,0 +1,21 @@
+[
+
+{
+	"id" : "1",
+	"eventName":"库存信息掌握不准确",
+	"eventDescription" : "成品库存信息偏差20",
+	"respondDepartment" : "物质配送中心",
+	"personInCharge" : "张华",
+	"happenTime" : "2012/6/30",
+	"status" : "已处理",
+},
+{
+	"id" : "2",
+	"eventName":"用户拖延付款",
+	"eventDescription" : "不能及时回收的货款额有300万",
+	"respondDepartment" : "财务部",
+	"personInCharge" : "李聪",
+	"happenTime" : "2012/5/23",
+	"status" : "已处理",
+}
+]

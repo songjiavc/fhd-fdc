@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<process name="majorRiskResponseMoreMain" xmlns="http://jbpm.org/4.4/jpdl">
+   <start g="57,57,48,48" name="start1">
+      <transition to="计划制定"/>
+   </start>
+   <task assignee="#{planMaker}" form="FHD.view.response.major.plan.MajorRiskPlanMainPanel" g="176,52,92,52" name="计划制定">
+   	  <description>{rate:{taskRate:0}}</description>
+      <transition to="计划主管审批"/>
+   </task>
+   <task assignee="#{planDirectorApproval}" form="FHD.view.response.major.approve.MajorRiskApproveMainPanel" g="310,51,92,52" name="计划主管审批">
+      <description>{rate:{taskRate:10}}</description>
+      <transition to="exclusive1"/>
+   </task>
+   <decision g="458,52,48,48" name="exclusive1">
+      <transition g="-11,-14" name="通过" to="计划领导审批">
+       	<condition expr="#{path=='yes'}"/>
+      </transition>
+      <transition g="484,26;220,26:-17,-18" name="驳回" to="计划制定">
+        <condition expr="#{path=='no'}"/>
+      </transition>
+   </decision>
+   <task assignee="#{planLeaderApproval}" form="FHD.view.response.major.approve.MajorRiskPlanLeaderApproveMainPanel" g="550,49,92,52" name="计划领导审批">
+      <description>{rate:{taskRate:20}}</description>
+      <transition to="exclusive2"/>
+   </task>
+   <decision g="687,52,48,48" name="exclusive2">
+      <transition g="-17,-18" name="通过" to="foreach1">
+      	<condition expr="#{path=='yes'}"/>
+      </transition>
+      <transition g="712,139;357,139:12,-18" name="驳回" to="计划主管审批">
+      	<condition expr="#{path=='no'}"/>
+      </transition>
+   </decision>
+   <foreach g="795,54,48,48" in="#{taskers}" name="foreach1" var="tasker">
+      <transition to="任务分配"/>
+   </foreach>
+   
+   <task assignee="#{tasker.deptRiskManager}" form="FHD.view.response.major.task.MajorRiskTaskDistributeMainPanel" g="774,134,92,52" name="任务分配">
+    	<description>{rate:{taskRate:30,finishRate:90}}</description>
+      <transition to="方案制定"/>
+   </task>
+   
+   <sub-process g="775,218,92,52" name="方案制定" sub-process-key="majorRiskResponseMoreSub">
+      <parameter-in subvar="startuserid" var="startuserid"/>
+      <parameter-in subvar="businessName" var="businessName"/>
+      <parameter-in subvar="businessId" var="businessId"/>
+      <parameter-in subvar="id" var="id"/>
+      <parameter-in subvar="mainTasker" var="tasker"/>
+      <parameter-in subvar="name" var="name"/>
+      <transition to="join1"/>
+   </sub-process>
+   <join g="799,294,48,48" multiplicity="#{joinCount}" name="join1">
+      <transition to="结果整理"/>
+   </join>
+   
+   <task assignee="#{officeSummary}" form="FHD.view.response.major.scheme.result.ResultSummaryMainPanel" g="776,366,92,52" name="结果整理">
+      <description>{rate:{taskRate:98}}</description>
+      <transition to="end1"/>
+   </task>
+   <end g="797,442,48,48" name="end1"/>
+</process>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<process name="riskWorkFlow" xmlns="http://jbpm.org/4.4/jpdl">
+   <description>riskWorkFlow</description>
+   <start g="283,3,48,48" name="start1">
+      <transition to="计划制定"/>
+   </start>
+   <task assignee="#{makePlanEmpId}" form="FHD.view.risk.assess.formulatePlan.FormulatePlanMainPanel" g="200,76,208,52" name="计划制定">
+      <description>0</description>
+      <transition to="计划审批"/>
+   </task>
+   <task assignee="#{AssessPlanApproverEmpId}" form="FHD.view.risk.assess.formulatePlan.FormulateApproverSubmitMain" g="202,155,208,52" name="计划审批">
+      <description>15</description>
+      <transition to="计划审批decision"/>
+   </task>
+   <decision g="282,235,48,48" name="计划审批decision">
+      <transition g="583,254;581,98:" to="计划制定">
+			<condition expr="#{path=='no'}"/>
+		</transition>
+      <transition g="-170,-4" name="to 承办人分配任务foreach" to="承办人分配任务foreach">
+			<condition expr="#{path=='yes'}"/>
+		</transition>
+   </decision>
+   
+   
+   <foreach g="279,317,48,48" in="#{assessPlanTakers}" name="承办人分配任务foreach" var="assessPlanTaker">
+      <transition to="任务分配"/>
+   </foreach>
+   
+   
+   <task assignee="#{assessPlanTaker.planTakerEmpId}" form="FHD.view.risk.assess.kpiSet.SetMainPanel" g="187,400,240,52" name="任务分配">
+   	  <description>30</description>
+      <transition to="join3"/>
+   </task>
+   
+   
+   <join g="280,486,48,48" multiplicity="#{assessPlanTakersJoinCount}" name="join3">
+      <on event="end">
+         <event-listener class="com.fhd.ra.business.assess.formulatePlan.AssessEmpEventListener"/><!-- 设置变量  riskTaskEvaluators   joinCount  -->
+      </on>
+      
+      <transition to="风险评估foreach"/> 
+   </join>
+   
+   <foreach g="284,561,48,48" in="#{riskTaskEvaluators}" name="风险评估foreach" var="riskTaskEvaluator">
+      <transition to="风险评估"/>
+   </foreach>
+   
+   
+   <task assignee="#{riskTaskEvaluator.riskTaskEvaluatorId}" form="FHD.view.risk.assess.quaAssess.QuaAssessMan" g="201,630,208,52" name="风险评估">
+   	  <description>50</description>
+      <transition to="join2"/>
+   </task>
+   
+   <join g="280,728,48,48" multiplicity="#{joinCount}" name="join2">
+      <transition to="foreach1"/> 
+   </join>
+
+
+   <foreach g="281,822,48,48" in="#{assessPlanTakers}" name="foreach1" var="assessPlanTaker">
+      <transition to="评估任务审批"/>
+   </foreach>
+   
+   
+   
+   <task assignee="#{assessPlanTaker.planTakerEmpId}" form="FHD.view.risk.assess.AssessApproveSubmit" g="198,901,208,52" name="评估任务审批">
+   	<description>75</description>
+      <transition to="join1"/>
+   </task>
+   
+   
+   
+   <join g="277,987,48,48" multiplicity="#{assessPlanTakersJoinCount}" name="join1">
+      <transition to="各部门打分风险事件汇总"/>
+   </join>
+   
+   <java class="com.fhd.ra.web.controller.assess.quaAssess.QuaAssessController" g="202,1084,200,50" method="summarizingDeptRiskRe" name="各部门打分风险事件汇总">
+		<arg>
+			<object expr="#{id}"/>
+		</arg>
+		<transition to="评估结果整理"/>
+   </java>
+   
+   <task assignee="#{riskManagemer}" form="FHD.view.risk.assess.againRiskTidy.RiskTidyMan" g="198,1180,208,52" name="评估结果整理">
+      <!-- <transition g="-113,-12" to="汇总存储评估记录"/> -->
+      <description>80</description>
+      <transition to="end1"/>
+   </task>
+   
+
+   <end g="279,1303,48,48" name="end1"/>
+</process>

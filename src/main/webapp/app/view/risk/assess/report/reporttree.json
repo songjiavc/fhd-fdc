@@ -1,0 +1,18 @@
+[ {
+	"id" : "report",
+	"text" : "风险报告",
+	"cls" : "org",
+	"leaf" : false,
+	"expanded" : true,
+	"children" : [ {
+		"id" : "dailyReport",
+		"text" : "风险管理报告",
+		"cls" : "org",
+		"leaf" : true
+	},{
+		"id" : "yearlyReport",
+		"text" : "风险评估报告",
+		"cls" : "org",
+		"leaf" : true
+	}]
+}]

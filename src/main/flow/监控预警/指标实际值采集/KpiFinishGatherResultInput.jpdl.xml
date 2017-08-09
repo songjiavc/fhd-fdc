@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<process name="KpiFinishGatherResultInput" xmlns="http://jbpm.org/4.4/jpdl">
+	<description>实际值数据收集流程</description>
+	
+   	<start g="301,36,48,48" name="start1">
+      <transition to="实际值数据收集foreach"/>
+   	</start>
+	<foreach g="297,129,48,48" in="#{items}" name="实际值数据收集foreach" var="item">
+		<description>{rate:{taskRate:0,finishRate:100}}</description>
+		<transition to="实际值数据收集"/>
+	</foreach>
+   	<task assignee="#{item.executeEmpId}" form="FHD.view.kpi.bpm.finishgather.KpiGatherRecorded" g="276,200,92,52" name="实际值数据收集">
+	  <description>{rate:{taskRate:25,finishRate:100}}</description>
+      <transition to="实际值数据收集审批"/>
+   	</task>
+    <task assignee="#{examineId}" form="FHD.view.kpi.bpm.finishgather.KpiExamineRecorded" g="219,300,200,50" name="实际值数据收集审批">
+		<description>{rate:{taskRate:50,finishRate:100}}</description>
+		<transition to="实际值数据收集审批decision"/>
+	</task>
+	<decision g="295,383,48,48" name="实际值数据收集审批decision">
+		<transition g="500,397;493,223:" to="实际值数据收集">
+			<condition expr="#{path=='no'}"/>
+		</transition>
+		<transition to="采集数据汇总">
+			<condition expr="#{path=='yes'}"/>
+		</transition>
+	</decision>
+	<java class="com.fhd.sm.business.KpiScheduleGatherBO" g="221,482,200,50" method="mergeFinishGatherSummarizing" name="采集数据汇总">
+		<arg>
+			<object expr="#{resultIds}"/>
+		</arg>
+		<transition to="实际值数据收集join"/>
+   </java>
+	<join g="302,602,48,48" multiplicity="#{joinCount}" name="实际值数据收集join">
+		<transition to="汇总"/>
+	</join>
+	<java class="com.fhd.sm.business.KpiScheduleGatherBO" g="230,740,200,50" method="mergeGatherTotalSummarizing" name="汇总">
+		<arg>
+			<object expr="#{planId}"/>
+		</arg>
+		<arg>
+			<object expr="#{executionId}"/>
+		</arg>
+		
+		<transition to="end1"/>
+   </java>
+   	<end g="310,848,48,48" name="end1"/>
+</process>

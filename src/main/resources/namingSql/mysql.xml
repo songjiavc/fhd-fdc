@@ -1,0 +1,420 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqls>
+	<sql id="select_authorityName">
+		<![CDATA[
+			select new SysAuthority(id,(lpad('┠',rank * 4 - 1, '　') || authority_Name) as authorityName) from SysAuthority order by seqNo
+		]]>
+	</sql>
+	<sql id="findKpiGatherResultsAssessmentListByCategoryId">
+		<![CDATA[
+			select k.kpi_name,r.assessment_value,c.category_name,k.gather_frequence,k.id,c.id,r.id,p.id,p.start_time,p.end_time,kc.eweight from t_kpi_kpi_gather_result r,t_kpi_kpi k,t_kpi_kpi_rela_category kc,t_com_category c,t_com_time_period p 
+			where r.kpi_id=k.id and k.id=kc.kpi_id and kc.category_id=c.id and r.time_period_id=p.id and k.gather_frequence=p.etype and k.delete_status=1 and k.is_kpi_category='KPI' and c.id=:categoryId 
+			and r.begin_time<=DATE_FORMAT(:date,'%Y-%m-%d')  and r.end_time>=DATE_FORMAT(:date,'%Y-%m-%d') 
+		]]>
+	</sql>
+	<sql id="findKpiGatherResultsFinishListByCategoryId">
+		<![CDATA[
+			select k.kpi_name,r.finish_value,c.category_name,k.gather_frequence,k.id,c.id,r.id,p.id,p.start_time,p.end_time,kc.eweight from t_kpi_kpi_gather_result r,t_kpi_kpi k,t_kpi_kpi_rela_category kc,t_com_category c,t_com_time_period p 
+			where r.kpi_id=k.id and k.id=kc.kpi_id and kc.category_id=c.id and r.time_period_id=p.id and k.gather_frequence=p.etype and k.delete_status=1 and k.is_kpi_category='KPI' and c.id=:categoryId 
+			and r.begin_time<=DATE_FORMAT(:date,'%Y-%m-%d')  and r.end_time>=DATE_FORMAT(:date,'%Y-%m-%d') 
+		]]>
+	</sql>
+	<sql id="findKpiGatherResultsAssessmentListByStrategyId">
+		<![CDATA[
+			 select k.KPI_NAME,r.assessment_value,sm.STRATEGY_MAP_NAME,k.GATHER_FREQUENCE,k.id,sm.id,r.id,p.id,p.START_TIME,p.END_TIME,ks.eweight from t_kpi_kpi_gather_result r, t_kpi_kpi k, T_KPI_SM_RELA_KPI ks, t_kpi_strategy_map sm, t_com_time_period p 
+			 where r.KPI_ID=k.id and k.id=ks.KPI_ID and ks.STRATEGY_MAP_ID=sm.id and r.TIME_PERIOD_ID=p.ID and k.GATHER_FREQUENCE=p.ETYPE
+			 and k.delete_status=1 and k.is_kpi_category='KPI' and sm.id=:strategyId 
+			 and r.begin_time<=DATE_FORMAT(:date,'%Y-%m-%d') and r.end_time>=DATE_FORMAT(:date,'%Y-%m-%d') 
+		]]>
+	</sql>
+	<sql id="findKpiGatherResultsFinishListByStrategyId">
+		<![CDATA[
+			 select k.KPI_NAME,r.finish_value,sm.STRATEGY_MAP_NAME,k.GATHER_FREQUENCE,k.id,sm.id,r.id,p.id,p.START_TIME,p.END_TIME,ks.eweight from t_kpi_kpi_gather_result r, t_kpi_kpi k, T_KPI_SM_RELA_KPI ks, t_kpi_strategy_map sm, t_com_time_period p 
+			 where r.KPI_ID=k.id and k.id=ks.KPI_ID and ks.STRATEGY_MAP_ID=sm.id and r.TIME_PERIOD_ID=p.ID and k.GATHER_FREQUENCE=p.ETYPE
+			 and k.delete_status=1 and k.is_kpi_category='KPI' and sm.id=:strategyId 
+			 and r.begin_time<=DATE_FORMAT(:date,'%Y-%m-%d') and r.end_time>=DATE_FORMAT(:date,'%Y-%m-%d') 
+		]]>
+	</sql>
+	<sql id="findRelaAssessResultBySubCategory">
+		<![CDATA[
+			 select c.CATEGORY_NAME,r.assessment_value,c.id,r.id,p.id,p.START_TIME,p.END_TIME from t_kpi_sm_assess_result r, t_com_category c, t_com_time_period p
+			 where r.OBJECT_ID=c.id and r.TIME_PERIOD_ID=p.ID and r.DATA_TYPE='sc' and c.parent_id=:targetId and c.delete_status=1 
+			 and r.begin_time<=DATE_FORMAT(:date,'%Y-%m-%d') and r.end_time>=DATE_FORMAT(:date,'%Y-%m-%d')
+		]]>
+	</sql>
+	<sql id="findRelaAssessResultBySubStrategy">
+		<![CDATA[
+			 select sm.STRATEGY_MAP_NAME,r.assessment_value,sm.id,r.id,p.id,p.START_TIME,p.END_TIME from t_kpi_sm_assess_result r, t_kpi_strategy_map sm, t_com_time_period p 
+			 where r.OBJECT_ID=sm.id and r.TIME_PERIOD_ID=p.ID and r.DATA_TYPE='str'
+			 and sm.parent_id=:targetId and sm.delete_status=1 
+			 and r.begin_time<=DATE_FORMAT(:date,'%Y-%m-%d') and r.end_time>=DATE_FORMAT(:date,'%Y-%m-%d')
+		]]>
+	</sql>
+	<sql id="findAllKpiRelaInfo">
+		<![CDATA[
+		    select oe.EMP_ID,k.COMPANY_ID,k.id,k.KPI_NAME,k.CALCULATE_TIME,k.TARGET_CALCULATE_TIME,oe.ETYPE,oe.ORG_ID,r.id  rid,r.BEGIN_TIME,r.END_TIME,r.TARGET_VALUE,r.FINISH_VALUE
+		    from t_kpi_kpi k,t_kpi_kpi_gather_result r,t_kpi_kpi_rela_org_emp oe,t_com_time_period p
+		    where k.is_calc='0yn_y' and k.id=r.KPI_ID and k.id=oe.KPI_ID
+		    and to_days(now())>=to_days(r.BEGIN_TIME) and to_days(now())<= to_days(r.END_TIME) and k.delete_status=1
+		    and r.TIME_PERIOD_ID=p.id and k.gather_frequence=p.etype
+		    and ((oe.ETYPE='T' and r.TARGET_VALUE is null and to_days(now())=to_days(k.TARGET_CALCULATE_TIME) and k.IS_TARGET_FORMULA<>'0sys_use_formular_formula' and  k.IS_TARGET_FORMULA<>'0sys_use_formular_export' ) or (oe.ETYPE='G' and r.FINISH_VALUE is null and to_days(now())=to_days(k.CALCULATE_TIME) and k.IS_RESULT_FORMULA<>'0sys_use_formular_formula' and k.IS_RESULT_FORMULA<>'0sys_use_formular_export' ))
+		    and oe.EMP_ID is not null
+		    order by k.KPI_NAME
+		]]>
+	</sql>
+	
+	<sql id="findAllCalcKpi">
+		<![CDATA[
+		    SELECT oe.EMP_ID,k.COMPANY_ID,k.id,k.KPI_NAME,k.CALCULATE_TIME,k.TARGET_CALCULATE_TIME,oe.ETYPE,oe.ORG_ID,k.GATHER_FREQUENCE 
+		    FROM
+		    t_kpi_kpi k,t_kpi_kpi_rela_org_emp oe
+		    WHERE
+		    k.is_calc = '0yn_y' AND k.id = oe.KPI_ID AND k.delete_status = 1 
+		    AND (
+				(
+					oe.ETYPE = 'T'
+					AND to_days(now()) = to_days(k.TARGET_CALCULATE_TIME)
+					AND k.IS_TARGET_FORMULA <> '0sys_use_formular_formula'
+					AND k.IS_TARGET_FORMULA <> '0sys_use_formular_export'
+				)
+				OR (
+					oe.ETYPE = 'G'
+					AND to_days(now()) = to_days(k.CALCULATE_TIME)
+					AND k.IS_RESULT_FORMULA <> '0sys_use_formular_formula'
+					AND k.IS_RESULT_FORMULA <> '0sys_use_formular_export'
+				)
+			)
+			AND oe.EMP_ID IS NOT NULL
+			ORDER BY
+				k.KPI_NAME
+		]]>
+	</sql>
+	
+	<sql id="findAllPlanKpiInfoById">
+		<![CDATA[
+			select oe.EMP_ID,k.COMPANY_ID,k.id,k.KPI_NAME,k.CALCULATE_TIME,k.TARGET_CALCULATE_TIME,oe.ETYPE,oe.ORG_ID,r.id  rid,r.BEGIN_TIME,r.END_TIME,r.TARGET_VALUE,r.FINISH_VALUE
+			from t_rm_risk_score_object obj inner join t_kpi_kpi k on obj.OBJECT_ID = k.ID inner join t_kpi_kpi_rela_org_emp oe on k.id = oe.KPI_ID
+			     inner join t_kpi_kpi_gather_result r on k.id=r.KPI_ID
+			     inner join t_com_time_period p on  r.TIME_PERIOD_ID= p.id and k.gather_frequence=p.etype
+			where
+			     obj.ASSESS_PLAN_ID = :planId AND
+			     k.is_calc='0yn_y' and 
+			     k.delete_status=1 and
+			     oe.ETYPE= :etype and ((oe.ETYPE='T' and k.IS_TARGET_FORMULA<>'0sys_use_formular_formula' and  k.IS_TARGET_FORMULA<>'0sys_use_formular_export' )
+			     or (oe.ETYPE='G' and k.IS_RESULT_FORMULA<>'0sys_use_formular_formula' and k.IS_RESULT_FORMULA<>'0sys_use_formular_export')) 
+			     and p.END_TIME >= DATE_FORMAT(:date,'%Y-%m-%d') and p.START_TIME <= DATE_FORMAT(:date,'%Y-%m-%d')
+			     and oe.EMP_ID is not null
+		    order by k.KPI_NAME
+		]]>
+	</sql>
+	<sql id="findAllPlanKpiById">
+		<![CDATA[
+			select oe.EMP_ID,k.COMPANY_ID,k.id,k.KPI_NAME,k.CALCULATE_TIME,k.TARGET_CALCULATE_TIME,oe.ETYPE,oe.ORG_ID
+			from t_rm_risk_score_object obj inner join t_kpi_kpi k on obj.OBJECT_ID = k.ID 
+				 inner join t_kpi_kpi_rela_org_emp oe on k.id = oe.KPI_ID
+			where
+			     obj.ASSESS_PLAN_ID = :planId AND
+			     k.is_calc='0yn_y' and 
+			     k.delete_status=1 and
+			     oe.ETYPE= :etype and ((oe.ETYPE='T' and k.IS_TARGET_FORMULA<>'0sys_use_formular_formula' and  k.IS_TARGET_FORMULA<>'0sys_use_formular_export' )
+			     or (oe.ETYPE='G' and k.IS_RESULT_FORMULA<>'0sys_use_formular_formula' and k.IS_RESULT_FORMULA<>'0sys_use_formular_export')) 
+			     and oe.EMP_ID is not null
+		    order by k.KPI_NAME
+		]]>
+	</sql>
+	
+	<!-- 监控预警 start -->
+	<!-- 删除指标数据 -->
+	<sql id="deleteKpiByCompanyId">
+		<![CDATA[
+		    delete from t_kpi_kpi  where company_id=? and is_kpi_category=?
+		]]>
+	</sql>
+	<sql id="deleteKpiRelaOrgByCompanyId">
+		<![CDATA[
+		    delete from t_kpi_kpi_rela_org_emp where kpi_id in (select id from t_kpi_kpi kpi where kpi.company_id=? and kpi.is_kpi_category=?)
+		]]>
+	</sql>
+	<sql id="deleteKpiRelaCategoryByCompanyId">
+		<![CDATA[
+		    delete from t_kpi_kpi_rela_category where kpi_id in (select id from t_kpi_kpi kpi where kpi.company_id=? and kpi.is_kpi_category=?)
+		]]>
+	</sql>
+	<sql id="deleteKpiRelaStrategyByCompanyId">
+		<![CDATA[
+		    delete  from t_kpi_sm_rela_kpi where kpi_id in (select id from t_kpi_kpi kpi where kpi.company_id=? and kpi.is_kpi_category=?)
+		]]>
+	</sql>
+	<sql id="deleteKpiRelaRiskByCompanyId">
+		<![CDATA[
+		    delete from t_kpi_kpi_rela_risk where kpi_id in (select id from t_kpi_kpi kpi where kpi.company_id=? and kpi.is_kpi_category=?)
+		]]>
+	</sql>
+	<sql id="deleteKpiRelaAlarmByCompanyId">
+		<![CDATA[
+		    delete  from t_kpi_kpi_rela_alarm where kpi_id in (select id from t_kpi_kpi kpi where kpi.company_id=? and kpi.is_kpi_category=?)
+		]]>
+	</sql>
+	<sql id="deleteKpiRelaGatherResultByCompanyId">
+		<![CDATA[
+		   delete  from t_kpi_kpi_gather_result where kpi_id in (select id from t_kpi_kpi kpi where kpi.company_id=? and kpi.is_kpi_category=?)
+		]]>
+	</sql>
+	<sql id="deleteKpiRelaDimByCompanyId">
+		<![CDATA[
+		   delete from t_kpi_kpi_rela_dim where kpi_id in (select id from t_kpi_kpi kpi where kpi.company_id=? and kpi.is_kpi_category=?)
+		]]>
+	</sql>
+	<sql id="deleteKpiRelaMemoByCompanyId">
+		<![CDATA[
+		   delete from t_kpi_rela_memo  where kpi_gatherreslut_id in (select r.id from t_kpi_kpi_gather_result r where r.kpi_id in (select kpi.id from t_kpi_kpi kpi where kpi.company_id=? and kpi.is_kpi_category=?))
+		]]>
+	</sql>
+	
+	<!-- 删除指标数据  -->
+	
+	<!-- 战略目标数据 -->
+	<sql id="deleteSmByCompanyId">
+		<![CDATA[
+		    delete from t_kpi_strategy_map  where company_id=?
+		]]>
+	</sql>
+	<sql id="deleteSmRelaAlarmByCompanyId">
+		<![CDATA[
+		    delete from t_kpi_sm_rela_alarm where strategy_map_id IN  (select id from t_kpi_strategy_map  where company_id=?)
+		]]>
+	</sql>
+	<sql id="deleteSmRelaOrgByCompanyId">
+		<![CDATA[
+		   delete from t_kpi_sm_rela_org_emp where strategy_map_id IN  (select id from t_kpi_strategy_map  where company_id=?)
+		]]>
+	</sql>
+	<sql id="deleteSmRelaThemeByCompanyId">
+		<![CDATA[
+		   delete from t_kpi_sm_rela_theme where strategy_map_id IN  (select id from t_kpi_strategy_map  where company_id=?)
+		]]>
+	</sql>
+	<sql id="deleteSmRelaDimByCompanyId">
+		<![CDATA[
+		   delete from t_kpi_sm_rela_dim where strategy_map_id IN  (select id from t_kpi_strategy_map  where company_id=?)
+		]]>
+	</sql>
+	<sql id="deleteSmRelaKpiByCompanyId">
+		<![CDATA[
+		   delete from t_kpi_sm_rela_kpi where strategy_map_id IN  (select id from t_kpi_strategy_map  where company_id=?)
+		]]>
+	</sql>
+	<sql id="deleteSmRelaResultByCompanyId">
+		<![CDATA[
+		   delete from t_kpi_sm_assess_result where object_id IN  (select id from t_kpi_strategy_map  where company_id=?)
+		]]>
+	</sql>
+	
+	<!-- 战略目标数据 -->
+	
+	<!-- 记分卡 -->
+	<sql id="deleteScByCompanyId">
+		<![CDATA[
+		    delete from t_com_category  where company_id=?
+		]]>
+	</sql>
+	<sql id="deleteScRelaAlarmByCompanyId">
+		<![CDATA[
+		    delete from t_com_category_rela_alarm where category_id IN  (select id from t_com_category  where COMPANY_ID=?)
+		]]>
+	</sql>
+	<sql id="deleteScRelaOrgByCompanyId">
+		<![CDATA[
+		   delete from t_com_category_rela_org_emp where CATEGORY_ID IN   (select ID from t_com_category  where COMPANY_ID=?)
+		]]>
+	</sql>
+	<sql id="deleteScRelaKpiByCompanyId">
+		<![CDATA[
+		   delete from t_kpi_kpi_rela_category where CATEGORY_ID IN (select ID from t_com_category  where COMPANY_ID=?)
+		]]>
+	</sql>
+	<sql id="deleteScRelaResultByCompanyId">
+		<![CDATA[
+		   delete from t_kpi_sm_assess_result where object_id IN  (select ID from t_com_category  where COMPANY_ID=?)
+		]]>
+	</sql>
+	
+	<!-- 记分卡 -->
+	
+	<!-- 指标类型 -->
+	<sql id="updateKpiBelongKcByCompanyId">
+		<![CDATA[
+		   update t_kpi_kpi set BELONG_KPI_CATEGORY = null  where COMPANY_ID=? and is_kpi_category ='KPI'
+		]]>
+	</sql>
+	
+	<!-- 指标类型 -->
+	
+	<!-- 监控预警  end-->
+	
+	
+	
+	<!-- 风险基础数据删除脚本开始 -->
+	<!-- 删除风险应对措施 -->
+	<sql id="removeRiskSolutionByCompanyId">
+	    <![CDATA[
+		    delete from T_RM_SOLUTION_RELA_RISK where risk_id in(
+			  select id from t_rm_risks where company_id = :companyId
+			)
+		]]>
+	</sql>
+	<!-- 删除风险控制措施 -->
+	<sql id="removeRiskMeasureByCompanyId">
+	    <![CDATA[
+		    delete from T_CON_MEASURE_RELA_RISK where risk_id in(
+			  select id from t_rm_risks where company_id = :companyId
+			)
+		]]>
+	</sql>
+	<!-- 删除风险关联的部门 -->
+	<sql id="removeRiskOrgByCompanyId">
+	    <![CDATA[
+		    delete from T_RM_RISK_ORG where risk_id in(
+			  select id from t_rm_risks where company_id = :companyId
+			)
+		]]>
+	</sql>
+	<!-- 删除风险库 -->
+	<sql id="removeRiskByCompanyId">
+	    <![CDATA[
+		    delete from t_rm_risks where company_id = :companyId
+		]]>
+	</sql>
+	<!-- 风险基础数据删除脚本结束 -->
+	
+	<!-- 风险评估数据删除脚本开始 -->
+	<!-- 删除风险记录表 -->
+	<sql id="removeRiskAdjustByCompanyId">
+	    <![CDATA[
+	    	delete from t_rm_risk_adjust_history where 
+	    	(assess_plan_id in (select id from t_rm_risk_assess_plan where COMPANY_ID = :companyId)) or (COMPANY_ID = :companyId)
+		]]>
+	</sql>
+	<!-- 删除评估结果表 -->
+	<sql id="removeAjustHistoryByCompanyId">
+	    <![CDATA[
+	    	delete from t_rm_adjust_history_result where assess_plan_id in (select id from t_rm_risk_assess_plan where COMPANY_ID = :companyId);
+		]]>
+	</sql>
+	<!-- 删除组织评估表 -->
+	<sql id="removeOrgAdjustByCompanyId">
+	    <![CDATA[
+	    	delete from t_rm_org_adjust_history where 
+	    	(assess_plan_id in (select id from t_rm_risk_assess_plan where COMPANY_ID= :companyId)) or (COMPANY_ID =  :companyId)
+		]]>
+	</sql>
+	<!-- 删除流程评估表 -->
+	<sql id="removeProcessAdjustByCompanyId">
+	    <![CDATA[
+	    	delete from t_rm_processure_adjust_history where 
+	    	(assess_plan_id in (select id from t_rm_risk_assess_plan where COMPANY_ID= :companyId)) or (COMPANY_ID = :companyId)
+		]]>
+	</sql>
+	<!-- 删除指标评估表 -->
+	<sql id="removeKpiAdjustByCompanyId">
+	    <![CDATA[
+	    	delete from t_rm_kpi_adjust_history where 
+	    	(assess_plan_id in (select id from t_rm_risk_assess_plan where COMPANY_ID= :companyId)) or (COMPANY_ID =  :companyId)
+		]]>
+	</sql>
+	<!-- 删除目标评估表 -->
+	<sql id="removeSmAdjustByCompanyId">
+	    <![CDATA[
+	    	delete from t_rm_strategy_adjust_history where 
+	    	(assess_plan_id in (select id from t_rm_risk_assess_plan where COMPANY_ID= :companyId)) or COMPANY_ID =  :companyId
+		]]>
+	</sql>
+	<!-- 删除结果表 -->
+	<sql id="removeScoreByCompanyId">
+	    <![CDATA[
+	    	delete from t_rm_score_result where rang_object_dept_emp_id in (
+				select a.id from t_rm_rang_object_dept_emp a
+				LEFT JOIN (
+				select * from t_rm_risk_score_object where assess_plan_id in (select id from t_rm_risk_assess_plan where COMPANY_ID= :companyId)
+				) b on b.id = a.score_object_id
+				LEFT JOIN
+				(
+				select *  from t_rm_risk_score_dept 
+				where SCORE_OBJECT_ID in (select id from t_rm_risk_score_object where assess_plan_id in (select id from 
+				t_rm_risk_assess_plan where COMPANY_ID= :companyId))
+				)c on c.id = a.score_dept_id
+			)
+		]]>
+	</sql>
+	<!-- 删除统计结果表 -->
+	<sql id="removeStatisticByComapnyId">
+	    <![CDATA[
+	    	delete from t_rm_statistics_result where assess_plan_id in (select id from t_rm_risk_assess_plan where COMPANY_ID= :companyId)
+		]]>
+	</sql>
+	<!-- 删除意见表 -->
+	<sql id="removeEditIdeaByCompanyId">
+	    <![CDATA[
+	    	delete from t_rm_edit_idea  where OBJECT_DEPT_EMP_ID in (
+				select * from (
+				select a.id from t_rm_rang_object_dept_emp a
+				LEFT JOIN (
+				select * from t_rm_risk_score_object where assess_plan_id in (select id from t_rm_risk_assess_plan where COMPANY_ID= :companyId)
+				) b on b.id = a.score_object_id
+				LEFT JOIN
+				(
+				select *  from t_rm_risk_score_dept 
+				where SCORE_OBJECT_ID in (select id from t_rm_risk_score_object where assess_plan_id in (select id from 
+				
+				t_rm_risk_assess_plan where COMPANY_ID= :companyId))
+				)c on c.id = a.score_dept_id) xx
+			)
+		]]>
+	</sql>
+	<!-- 删除综合表 -->
+	<sql id="removeRangByCompanyId">
+	    <![CDATA[
+	    	delete from t_rm_rang_object_dept_emp where id in (
+				select * from (
+				select a.id from t_rm_rang_object_dept_emp a
+				LEFT JOIN (
+				select * from t_rm_risk_score_object where assess_plan_id in (select id from t_rm_risk_assess_plan where COMPANY_ID= :companyId)
+				) b on b.id = a.score_object_id
+				LEFT JOIN
+				(
+				select *  from t_rm_risk_score_dept 
+				where SCORE_OBJECT_ID in (select id from t_rm_risk_score_object where assess_plan_id in (select id from 
+				
+				t_rm_risk_assess_plan where COMPANY_ID= :companyId))
+				)c on c.id = a.score_dept_id) xx
+			)
+		]]>
+	</sql>
+	<!-- 删除打分部门表 -->
+	<sql id="removeScoreDeptByCompanyId">
+	    <![CDATA[
+	    	delete  from t_rm_risk_score_dept 
+			where SCORE_OBJECT_ID in (select id from t_rm_risk_score_object where assess_plan_id in 
+			(select id from t_rm_risk_assess_plan where COMPANY_ID= :companyId))
+		]]>
+	</sql>
+	<!-- 删除打分对表 -->
+	<sql id="removeRiskScoreByCompanyId">
+	    <![CDATA[
+	    	delete from t_rm_risk_score_object where assess_plan_id in (select id from t_rm_risk_assess_plan where COMPANY_ID= :companyId)
+		]]>
+	</sql>
+	<!-- 删除审批人,评估人 -->
+	<sql id="removeCircuseeByCompanyId">
+	    <![CDATA[
+	    	delete from t_rm_risk_circusee where ASSESS_PLAN_ID in (select id from t_rm_risk_assess_plan where COMPANY_ID= :companyId)
+		]]>
+	</sql>
+	<!-- 删除计划表 -->
+	<sql id="removeAssessPlanByCompanyId">
+	    <![CDATA[
+	    	delete from t_rm_risk_assess_plan where COMPANY_ID= :companyId
+		]]>
+	</sql>
+	<!-- 风险评估数据删除脚本开始 -->
+</sqls>
