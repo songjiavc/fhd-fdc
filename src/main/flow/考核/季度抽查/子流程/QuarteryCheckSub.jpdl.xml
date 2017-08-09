@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<process name="QuarteryCheckSub" xmlns="http://jbpm.org/4.4/jpdl">
+   <start g="471,17,48,48" name="start1">
+      <transition to="填写存在问题"/>
+   </start>
+   <task assignee="#{rater.id}" g="448,103,92,52" form="FHD.view.check.quarterlycheck.mark.QuerterlyCheckMark" name="填写存在问题">
+      <transition to="部门主管审批"/>
+   </task>
+   <task assignee="#{deptLeader}" g="451,193,92,52" form="FHD.view.check.quarterlycheck.mark.QuarterlyCheckMarkApprovalForLearder" name="部门主管审批">
+      <transition to="exclusive1"/>
+   </task>
+   <decision g="473,282,48,48" name="exclusive1">
+      <transition g="372,308;370,128:" to="填写存在问题">
+      <condition expr="#{path=='no'}"/>
+      </transition>
+      <transition to="部门负责人审批">
+      <condition expr="#{path=='yes'}"/>
+      </transition>
+   </decision>
+   <task assignee="#{deptCharger}" g="445,363,107,52" form="FHD.view.check.quarterlycheck.mark.QuarterlyCheckMarkApprovalForCharge" name="部门负责人审批">
+      <transition to="exclusive2"/>
+   </task>
+   <decision g="476,445,48,48" name="exclusive2">
+      <transition g="649,469;644,125:" to="填写存在问题">
+      <condition expr="#{path=='no'}"/>
+      </transition>
+      <transition to="风险办审批">
+      <condition expr="#{path=='yes'}"/>
+      </transition>
+   </decision>
+   <task g="454,535,92,52" name="风险办审批" form="FHD.view.check.quarterlycheck.mark.QuarterlyCheckMarkApprovalForMarager" assignee="#{riskDeptManager}">
+      <transition to="exclusive3"/>
+   </task>
+   <decision g="477,636,48,48" name="exclusive3">
+      <transition g="868,655;861,124:" to="填写存在问题">
+      <condition expr="#{path=='no'}"/>
+      </transition>
+      <transition to="end1">
+      <condition expr="#{path=='yes'}"/>
+      </transition>
+   </decision>
+   <end g="479,748,48,48" name="end1"/>
+</process>

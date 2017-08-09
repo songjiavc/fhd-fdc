@@ -28,6 +28,12 @@ Ext.define('FHD.view.check.yearcheck.plan.YearCheckPlanFormOne', {
 	        		var value = Ext.JSON.decode(action.result.data.contactName);
 	        		me.contactor.setValues(value);
 	        	}
+	        	if(action.result.data.beginDataStr){
+	        		me.assessPlanTimeStart.setValue(action.result.data.beginDataStr);
+	        	}
+	        	if(action.result.data.endDataStr){
+	        		me.assessPlanTimeEnd.setValue(action.result.data.endDataStr);
+	        	}
 	        }
 	    });
 	},

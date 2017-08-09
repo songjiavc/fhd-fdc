@@ -1,5 +1,6 @@
 package com.fhd.check.business.yearcheck;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -17,12 +18,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fhd.check.business.OrgRelaLeaderBO;
+import com.fhd.check.business.checkDetail.CheckDetailBO;
 import com.fhd.comm.business.bpm.jbpm.JBPMBO;
 import com.fhd.comm.business.bpm.jbpm.JBPMOperate;
 import com.fhd.core.dao.Page;
 import com.fhd.core.utils.Identities;
 import com.fhd.dao.check.yearcheck.YearCheckDAO;
 import com.fhd.dao.check.yearcheck.YearCheckPlanOrgDAO;
+import com.fhd.dao.sys.orgstructure.SysOrganizationDAO;
 import com.fhd.entity.assess.formulatePlan.RiskAssessPlan;
 import com.fhd.entity.assess.formulatePlan.RiskAssessPlanTakerObject;
 import com.fhd.entity.bpm.JbpmHistActinst;
@@ -33,6 +36,7 @@ import com.fhd.entity.check.yearcheck.plan.YearCheckPlanOrg;
 import com.fhd.entity.risk.Template;
 import com.fhd.entity.sys.dic.DictEntry;
 import com.fhd.entity.sys.orgstructure.SysEmployee;
+import com.fhd.entity.sys.orgstructure.SysOrganization;
 import com.fhd.fdc.commons.interceptor.RecordLog;
 import com.fhd.fdc.utils.Contents;
 import com.fhd.fdc.utils.UserContext;
@@ -60,7 +64,10 @@ public class YearCheckBO {
 	@Autowired
 	private RiskScoreBO riskScoreBO;
 	@Autowired
-	private JBPMOperate o_jbpmOperate;
+	private CheckDetailBO checkDetailBO;
+	@Autowired
+	private SysOrganizationDAO organizationDAO;
+	
 	public Page<YearCheckPlan> findAllPlanTypesGridPage(String query, Page<YearCheckPlan> page, String status) {
 		DetachedCriteria dc = DetachedCriteria.forClass(YearCheckPlan.class);
 
@@ -114,19 +121,25 @@ public class YearCheckBO {
 		if(StringUtils.isNotBlank(yearCheckPlan.getEndDateStr())){//开始时间
 			yearCheckPlan.setEndDate(DateUtils.parseDate(yearCheckPlan.getEndDateStr(), "yyyy-MM-dd"));
 		}
+		yearCheckPlan.setCreateEmp(UserContext.getUser().getEmp());//计划创建人
 		yearCheckPlan.setDealStatus(Contents.DEAL_STATUS_NOTSTART);//点保存按钮，处理状态为"未开始"
 		yearCheckPlan.setStatus(Contents.DEAL_STATUS_SAVED);//保存：状态为"已保存"
 
 		checkDAO.merge(yearCheckPlan);;
-		//将考核任务分配表数据赋值到年度考核计划部门关系表
-		List<Map<String,String>> orgEmpList=orgRelaLeaderBO.findEmpIdsFromOrgRelaEmpByManagedIdAndBussinessId("01",null);
+		//先删除原有数据后将考核任务分配表数据赋值到年度考核计划部门关系表
+		List<Map<String,String>> orgEmpList=orgRelaLeaderBO.findEmpIdsFromOrgRelaEmpByManagedIdAndBussinessId("01",null,null);
+		yearCheckPlanOrgBO.deleteEmpOrgByPlan(yearCheckPlan.getId());
 		yearCheckPlanOrgBO.saveEmpOrgByPlan(orgEmpList,yearCheckPlan);
 		inmap.put("planId", yearCheckPlan.getId());
 		map.put("data", inmap);
 		map.put("success", true);
 		return map;
 	}
-
+	/*
+	 * 根据ID查询计划
+	 * AUTHOR：Perry Guo
+	 * DATE:2017-07-30
+	 * */
 	public Map<String, Object> findYearCheckPlanById(String id) {
 		
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -197,7 +210,7 @@ public class YearCheckBO {
 	 * change by 郭鹏
 	 * @return 
 	 */
-	@SuppressWarnings("deprecation")
+	@SuppressWarnings({ "deprecation", "rawtypes" })
 	@Transactional
 	@RecordLog("提交计划")
 	public boolean submitAssessRiskPlanToApproverSecrecy(String approverId, String businessId, 
@@ -237,7 +250,6 @@ public class YearCheckBO {
 					o_jbpmBO.doProcessInstance(executionId, variablesBpmTwo);
 				}
 			}
-	
 		}
 		return true;
 	}
@@ -294,7 +306,7 @@ public class YearCheckBO {
 		}}
 	
 	/**
-	 * 年度考核计划发起负责人审批
+	 * 自评提交
 	 * AUTHOR:Perry Guo
 	 * DATE:2017-08-01
 	 * */
@@ -319,7 +331,7 @@ public class YearCheckBO {
 				variables.put("path", isPass);
 				variables.put("examineApproveIdea", examineApproveIdea);
 				variables.put("raters", raters);
-				variables.put("checkCount", checkPlans.size());
+				variables.put("joinCountForSon", checkPlans.size());
 				variables.put("planId", businessId);
 				o_jbpmBO.doProcessInstance(executionId, variables);
 	}
@@ -328,7 +340,7 @@ public class YearCheckBO {
 	}
 	
 	/**
-	 * 年度考核计划发起负责人审批
+	 * 自评提交
 	 * AUTHOR:Perry Guo
 	 * DATE:2017-08-01
 	 * */
@@ -349,5 +361,240 @@ public class YearCheckBO {
 				variables.put("raterLeader", approver);
 				o_jbpmBO.doProcessInstance(executionId, variables);
 	
+	}
+	
+	/**
+	 * 风险办评分提交
+	 * AUTHOR:Perry Guo
+	 * DATE:2017-08-01
+	 * */
+	@Transactional
+	public void submitRiskMark(String executionId, String businessId) {
+				Map<String, Object> variables = new HashMap<String, Object>();
+
+				o_jbpmBO.doProcessInstance(executionId, variables);
+	
+	}
+	
+	public void submOwenMarkForLeader(String executionId, String businessId, String isPass, String examineApproveIdea, String approverId) {
+		
+			if ("no".equals(isPass)) {//审批未通过
+				Map<String, Object> variables = new HashMap<String, Object>();
+				variables.put("path", isPass);
+				variables.put("examineApproveIdea", examineApproveIdea);
+				o_jbpmBO.doProcessInstance(executionId, variables);
+			}else{// 审批通过，工作流提交
+				String raterCharge="";
+				JSONArray jsonArray = JSONArray.fromObject(approverId);
+				if (jsonArray.size() > 0){
+					 JSONObject jsobj = jsonArray.getJSONObject(0);
+					 raterCharge = jsobj.getString("id");//审批人
+				}
+				Map<String, Object> variables = new HashMap<String, Object>();
+				variables.put("path", isPass);
+				variables.put("raterCharge", raterCharge);//承办人
+				variables.put("examineApproveIdea", examineApproveIdea);
+				variables.put("planId", businessId);
+				variables.put("orgId", o_jbpmBO.getVariable("orgId", executionId));
+				o_jbpmBO.doProcessInstance(executionId, variables);
+			}
+	}
+	public void submOwenMarkForCharge(String executionId, String businessId, String isPass) {
+			
+			Map<String, Object> variables = new HashMap<String, Object>();
+			List<String> riskManageid=organizationDAO.queryOrgByName("风险管理办公室");
+			List<String> chargeManageid=organizationDAO.queryOrgByName("审计处");
+			SysEmployee riskManage=new SysEmployee();
+			SysEmployee chargeManage=new SysEmployee();
+			if (null!=riskManage&&null!=chargeManage) {
+				//查询审计处与风险办配置的管理人员，如果为空则默认为该部门风险管理员
+				List<Map<String,String>> riskManagers=orgRelaLeaderBO.findEmpIdsFromOrgRelaEmpByManagedIdAndBussinessId("01",UserContext.getUser().getMajorDeptId(),riskManageid.get(0));
+				List<Map<String,String>> auditManagers=orgRelaLeaderBO.findEmpIdsFromOrgRelaEmpByManagedIdAndBussinessId("01",UserContext.getUser().getMajorDeptId(),chargeManageid.get(0));
+				if (riskManagers.size()>=0) {
+					riskManage.setId(riskManagers.get(0).get("id"));
+				}else{
+					riskManage=riskScoreBO.findEmpsByRoleIdAnddeptId(riskManageid.get(0),"DeptRiskManager");
+				}
+				if (auditManagers.size()>=0) {
+					chargeManage.setId(auditManagers.get(0).get("id"));
+				}else{
+					chargeManage=riskScoreBO.findEmpsByRoleIdAnddeptId(chargeManageid.get(0),"DeptRiskManager");
+				}
+			}
+			variables.put("path", isPass);
+			variables.put("planId", businessId);
+			variables.put("riskManagerEmpId", riskManage.getId());
+			variables.put("auditManager", chargeManage.getId());
+			variables.put("orgId", o_jbpmBO.getVariable("orgId", executionId));
+			o_jbpmBO.doProcessInstance(executionId, variables);
+	
+	}
+	public void submitAuditMark(String executionId, String businessId, String approverId) {
+		Map<String, Object> variables = new HashMap<String, Object>();
+		SysEmployee emp=UserContext.getUser().getEmp();
+		String approver="";
+		JSONArray jsonArray = JSONArray.fromObject(approverId);
+		if (jsonArray.size() > 0){
+			 JSONObject jsobj = jsonArray.getJSONObject(0);
+			 approver = jsobj.getString("id");//审批人
+		}
+		variables.put("empId", emp.getId());
+		variables.put("empName", emp.getEmpname());
+		variables.put("auditManagerLeader", approver);
+		o_jbpmBO.doProcessInstance(executionId, variables);
+		
+	}
+	public void submAuditMarkForLeader(String executionId, String businessId, String isPass, String examineApproveIdea,
+			String approverId) {
+		if ("no".equals(isPass)) {//审批未通过
+			Map<String, Object> variables = new HashMap<String, Object>();
+			variables.put("path", isPass);
+			variables.put("examineApproveIdea", examineApproveIdea);
+			o_jbpmBO.doProcessInstance(executionId, variables);
+		}else{// 审批通过，工作流提交
+			String raterCharge="";
+			JSONArray jsonArray = JSONArray.fromObject(approverId);
+			if (jsonArray.size() > 0){
+				 JSONObject jsobj = jsonArray.getJSONObject(0);
+				 raterCharge = jsobj.getString("id");//审批人
+			}
+			Map<String, Object> variables = new HashMap<String, Object>();
+			variables.put("path", isPass);
+			variables.put("auditCharge", raterCharge);//负责人
+			variables.put("examineApproveIdea", examineApproveIdea);
+			variables.put("planId", businessId);
+			variables.put("orgId", o_jbpmBO.getVariable("orgId", executionId));
+			o_jbpmBO.doProcessInstance(executionId, variables);
+	}
+	}
+	public void submAuditMarkForCharge(String executionId, String businessId, String isPass, String examineApproveIdea) {
+		if ("no".equals(isPass)) {//审批未通过
+			Map<String, Object> variables = new HashMap<String, Object>();
+			variables.put("path", isPass);
+			variables.put("examineApproveIdea", examineApproveIdea);
+			o_jbpmBO.doProcessInstance(executionId, variables);
+		}else{// 审批通过，工作流提交
+			Map<String, Object> variables = new HashMap<String, Object>();
+			variables.put("path", isPass);
+			variables.put("examineApproveIdea", examineApproveIdea);
+			variables.put("planId", businessId);
+			variables.put("orgId", o_jbpmBO.getVariable("orgId", executionId));
+			o_jbpmBO.doProcessInstance(executionId, variables);
+		}
+	}
+	public void submTidyMark(String executionId, String businessId, String isPass, String examineApproveIdea,
+			String approverId) {
+		if ("no".equals(isPass)) {//审批未通过
+			Map<String, Object> variables = new HashMap<String, Object>();
+			variables.put("path", isPass);
+			variables.put("examineApproveIdea", examineApproveIdea);
+			o_jbpmBO.doProcessInstance(executionId, variables);
+		}else{// 审批通过，工作流提交
+			String raterCharge="";
+			JSONArray jsonArray = JSONArray.fromObject(approverId);
+			if (jsonArray.size() > 0){
+				 JSONObject jsobj = jsonArray.getJSONObject(0);
+				 raterCharge = jsobj.getString("id");//审批人
+			}
+			Map<String, Object> variables = new HashMap<String, Object>();
+			variables.put("path", isPass);
+			variables.put("riskLeaderForTidy", raterCharge);//负责人
+			variables.put("examineApproveIdea", examineApproveIdea);
+			variables.put("planId", businessId);
+			variables.put("orgId", o_jbpmBO.getVariable("orgId", executionId));
+			o_jbpmBO.doProcessInstance(executionId, variables);
+		}
+		
+	}
+	public void submTidyMarkforLeader(String executionId, String businessId, String isPass, String examineApproveIdea,
+			String approverId) {
+		if ("no".equals(isPass)) {//审批未通过
+			Map<String, Object> variables = new HashMap<String, Object>();
+			variables.put("path", isPass);
+			variables.put("examineApproveIdea", examineApproveIdea);
+			o_jbpmBO.doProcessInstance(executionId, variables);
+		}else{// 审批通过，工作流提交
+			String raterCharge="";
+			JSONArray jsonArray = JSONArray.fromObject(approverId);
+			if (jsonArray.size() > 0){
+				 JSONObject jsobj = jsonArray.getJSONObject(0);
+				 raterCharge = jsobj.getString("id");//审批人
+			}
+			Map<String, Object> variables = new HashMap<String, Object>();
+			variables.put("path", isPass);
+			variables.put("riskChargeForTidy", raterCharge);//负责人
+			variables.put("examineApproveIdea", examineApproveIdea);
+			variables.put("planId", businessId);
+			variables.put("orgId", o_jbpmBO.getVariable("orgId", executionId));
+			o_jbpmBO.doProcessInstance(executionId, variables);
+		}
+	}
+	public void submTidyMarkforCharge(String executionId, String businessId, String isPass, String examineApproveIdea,
+			String approverId) {
+		if ("no".equals(isPass)) {//审批未通过
+			Map<String, Object> variables = new HashMap<String, Object>();
+			variables.put("path", isPass);
+			variables.put("examineApproveIdea", examineApproveIdea);
+			o_jbpmBO.doProcessInstance(executionId, variables);
+		}else{// 审批通过，工作流提交
+			String raterCharge="";
+			JSONArray jsonArray = JSONArray.fromObject(approverId);
+			if (jsonArray.size() > 0){
+				 JSONObject jsobj = jsonArray.getJSONObject(0);
+				 raterCharge = jsobj.getString("id");//审批人
+			}
+			Map<String, Object> variables = new HashMap<String, Object>();
+			variables.put("path", isPass);
+			variables.put("president", raterCharge);//负责人
+			variables.put("examineApproveIdea", examineApproveIdea);
+			variables.put("planId", businessId);
+			variables.put("orgId", o_jbpmBO.getVariable("orgId", executionId));
+			o_jbpmBO.doProcessInstance(executionId, variables);
+		}
+		
+	}
+	public void submTidyMarkforPresident(String executionId, String businessId, String isPass,
+			String examineApproveIdea, String approverId) {
+		if ("no".equals(isPass)) {//审批未通过
+			Map<String, Object> variables = new HashMap<String, Object>();
+			variables.put("path", isPass);
+			variables.put("examineApproveIdea", examineApproveIdea);
+			o_jbpmBO.doProcessInstance(executionId, variables);
+		}else{// 审批通过，工作流提交
+			Map<String, Object> variables = new HashMap<String, Object>();
+			variables.put("path", isPass);
+			variables.put("examineApproveIdea", examineApproveIdea);
+			variables.put("planId", businessId);
+			variables.put("orgId", o_jbpmBO.getVariable("orgId", executionId));
+			o_jbpmBO.doProcessInstance(executionId, variables);
+		}
+		
+	}
+	//验证计划是否合规
+	public Map<String, Object> checkYearCheckPlan(String approverId, String businessId, String executionId) {
+		Map<String,Object> data=new HashMap<String,Object>();
+		Boolean states=true;
+		List<Map> detailList=checkDetailBO.validaCheckDetail();
+		//判断考核标准是否合规
+		if (detailList.size()>0) {
+			states=false;
+			data.put("data", "考核标准不合规！请检查");
+		}else{
+		//判断发起部门是否都拥有部门风险管理员
+		List<YearCheckPlanOrg> orgList=yearCheckPlanOrgBO.getPlanOrgByPlanID(businessId, null, null);
+		String noRiskManager="";
+		for (int i = 0; i < orgList.size(); i++) {
+		SysEmployee emp=riskScoreBO.findEmpsByRoleIdAnddeptId(orgList.get(i).getOrgId().getId(),"DeptRiskManager");
+		if (null==emp) {
+			noRiskManager=noRiskManager+orgList.get(i).getOrgId().getOrgname()+",";
+		}
+		}
+		if (StringUtils.isNotBlank(noRiskManager)) {
+			states=false;
+			data.put("data", "以下部门未设置风险管理员："+noRiskManager);
+		}
+		}
+		data.put("states", states);
+		return data;
 	}
 }

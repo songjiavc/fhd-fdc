@@ -155,9 +155,14 @@ Ext.define('FHD.view.check.yearcheck.plan.YearCheckFormMain',{
 		 		}
 		 	}
     	});
+    	if (null!=me.businessId) {
+    		  	me.yearCheckPlanFormOne.loadData(me.businessId);//加载表单数据
+    	}
 		me.planConformEditNext = Ext.create('FHD.view.check.yearcheck.plan.YearCheckPlanFormNext',{
 			 border: true,
 			 executionId: me.executionId,
+			 winId: me.winId,
+			 businessId: me.businessId,
 			 back:function(){//上一步方法，传参
 			 	me.btnSubmit.setDisabled(true);
 			 }
@@ -168,8 +173,22 @@ Ext.define('FHD.view.check.yearcheck.plan.YearCheckFormMain',{
             disabled: true,
             iconCls: 'icon-operator-submit',
             handler: function () {
+            			FHD.ajax({
+			url : __ctxPath + '/check/yearcheck/checkYearCheckPlan.f',
+			params : {
+			businessId:me.businessId,
+			executionId:me.executionId
+			},
+			callback : function(data){
+				if(data.states==false){
+				FHD.notification(data.data,FHD.locale.get('fhd.common.prompt'));
+				}else{
+				me.submitWindow();
+				}
+				
+				}
+		});
             	
-            	me.submitWindow();
             }
         });
 		me.basicPanel = Ext.create('FHD.ux.layout.StepNavigator',{

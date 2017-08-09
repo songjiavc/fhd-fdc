@@ -16,7 +16,14 @@
 				text:'提交',
 				iconCls: 'icon-operator-submit',
 				handler: function () {
-					me.submit();
+					var dataStore=me.yearCheckOwenMarkDownPanal.yearCheckOwenMarkGrid.store;
+					var dataSize=dataStore.data.length;
+					var modifidSize=dataStore.getModifiedRecords().length
+					if(modifidSize!=dataSize){
+						Ext.Msg.alert("错误", "请先完成评分后提交");
+					}else{
+						me.submit();
+					}
 	            }
 			}
 		];
@@ -149,7 +156,7 @@
 			var data = Ext.JSON.encode(jsonArray);
 			
 	var approverId = formulateApproverEdit.items.items[0].value;
-		me.body.mask("提交中...","x-mask-loading");
+		formulateApproverEdit.body.mask("提交中...","x-mask-loading");
 		FHD.ajax({//ajax调用
 			url : __ctxPath+ '/check/yearcheck/subOwenMark.f',
 		    params : {

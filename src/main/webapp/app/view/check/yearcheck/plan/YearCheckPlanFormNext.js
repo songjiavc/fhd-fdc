@@ -44,7 +44,9 @@ Ext.define('FHD.view.check.yearcheck.plan.YearCheckPlanFormNext', {
             margin: 2,
             columnWidth: 1,
             height:420,
-            executionId: me.executionId
+            executionId: me.executionId,
+			winId: me.winId,
+			businessId: me.businessId
             }
          )
          me.fieldSet2 = Ext.create('Ext.form.FieldSet', {

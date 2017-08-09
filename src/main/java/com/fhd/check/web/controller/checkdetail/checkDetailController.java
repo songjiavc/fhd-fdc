@@ -35,8 +35,9 @@ public class checkDetailController {
 	@SuppressWarnings("rawtypes")
 	@ResponseBody
 	@RequestMapping("/check/checkdetail/finCheckDetailAllPage.f")
-	public List<Map> finCheckDetailAllPage (int start, int limit, String query, String sort)
+	public Map<String, Object> finCheckDetailAllPage (int start, int limit, String query, String sort)
 	{
+		HashMap<String, Object> maps = new HashMap<String, Object>();
 		Page<CheckDetail> page = new Page<CheckDetail>();
 		page.setPageNo(limit == 0 ? 0 : (start / limit) + 1);
 		page.setPageSize(limit);
@@ -75,9 +76,23 @@ public class checkDetailController {
 		map.put("detailStutes",stutes);
 		data.add(map);
 		}
-		
-		return data;
+		maps.put("totalCount", page.getTotalItems());
+		maps.put("datas", data);
+		return maps;
 	}
+	
+	/*
+	 * 查询所有考评细则controller
+	 * AUTHOR:Perry Guo
+	 * DATE:2017-07-17
+	 * PARAM: JsonString jsonArray  需保存或更新的考评项目
+	 * */
+	@ResponseBody
+	@RequestMapping("/check/checkdetail/findCheckDetail.s")
+	public List<CheckDetail> findCheckDetail(String id) {
+		return checkDetailBO.findCheckDetail(id);
+	}
+	
 	
 	/*
 	 * 保存更新考评细则controller

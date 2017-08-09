@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<process name="QuarterlyCheck" xmlns="http://jbpm.org/4.4/jpdl">
+   <start g="52,39,48,48" name="start1">
+      <transition to="抽查计划制定"/>
+   </start>
+   <task assignee="#{planMarker}" form="FHD.view.check.quarterlycheck.plan.QuarterlyCheckFormMain" g="178,38,92,52" name="抽查计划制定">
+      <transition to="主管领导审批"/>
+   </task>
+   <task assignee="#{riskLeader}" form="FHD.view.check.querterlycheck.approval.QuarterlyCheckPlanApproverForLeader" g="380,38,92,52" name="主管领导审批">
+      <transition to="exclusive1"/>
+   </task>
+   <decision g="558,39,48,48" name="exclusive1">
+      <transition g="583,9;222,8:" to="抽查计划制定">
+      <condition expr="#{path=='no'}"/>
+      </transition>
+      <transition to="负责人审批">
+      <condition expr="#{path=='yes'}"/>
+      </transition>
+   </decision>
+   <task assignee="#{riskCharge}" form="FHD.view.check.querterlycheck.approval.QuarterlyCheckPlanApproverForCharger" g="683,38,92,52" name="负责人审批">
+      <transition to="exclusive2"/>
+   </task>
+   <decision g="850,40,48,48" name="exclusive2">
+      <transition g="874,136;225,137:" to="抽查计划制定">
+      <condition expr="#{path=='no'}"/>
+      </transition>
+      <transition g="994,64:" to="foreach1">
+      <condition expr="#{path=='yes'}"/>
+      </transition>
+   </decision>
+   <foreach g="969,109,48,48" in="#{raters}" name="foreach1" var="rater">
+      <transition to="抽查"/>
+   </foreach>
+   <sub-process g="949,205,92,52" name="抽查" sub-process-key="QuarteryCheckSub">
+      <parameter-in subvar="startuserid" var="startuserid"/>
+      <parameter-in subvar="businessName" var="businessName"/>
+      <parameter-in subvar="businessId" var="businessId"/>
+      <parameter-in subvar="id" var="id"/>
+      <parameter-in subvar="name" var="name"/>
+      <parameter-in subvar="rater" var="rater"/>
+      <transition to="join1"/>
+   </sub-process>
+     <join name="join1" multiplicity="${joinCountForSon}" g="871,204,48,48">
+      <transition to="结果整理"/>
+   </join>
+   <task assignee="#{riskManager}" g="749,203,92,52" form="FHD.view.check.quarterlycheck.tidy.QuarterlyTidyMainPanal" name="结果整理">
+      <transition to="风险办领导审批"/>
+   </task>
+   <task assignee="#{riskLeader}" g="537,203,109,52" form="FHD.view.check.quarterlycheck.tidy.QuarterlyTidyApprovalForLeader" name="风险办领导审批">
+      <transition to="exclusive3"/>
+   </task>
+   <decision g="397,205,48,48" name="exclusive3">
+      <transition g="422,303;796,305:" to="结果整理">
+      <condition expr="#{path=='no'}"/>
+      </transition>
+      <transition to="风险办负责人审批">
+      <condition expr="#{path=='yes'}"/>
+      </transition>
+   </decision>
+   <task assignee="#{riskCharge}" g="167,204,116,52" form="FHD.view.check.quarterlycheck.tidy.QuarterlyTidyApprovalForCharger" name="风险办负责人审批">
+      <transition g="223,164;514,165;795,165:" to="结果整理">
+      <condition expr="#{path=='no'}"/>
+      </transition>
+      <transition to="end1">
+      <condition expr="#{path=='yes'}"/>
+      </transition>
+   </task>
+   <end g="204,335,48,48" name="end1"/>
+   
+</process>

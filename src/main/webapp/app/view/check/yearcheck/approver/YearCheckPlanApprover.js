@@ -18,8 +18,13 @@ Ext.define('FHD.view.check.yearcheck.approver.YearCheckPlanApprover', {
 				text:'提交',
 				iconCls: 'icon-operator-submit',
 				handler: function () {
+					if('no'==me.formulateApproverSubmitDownMain.ideaApproval.isPass){
+					me.submitForm('',me.formulateApproverSubmitDownMain.ideaApproval.isPass,me.formulateApproverSubmitDownMain.ideaApproval.getValue())
+						
+					}else{
 					me.submit(me.formulateApproverSubmitDownMain.ideaApproval.isPass,
 			    							me.formulateApproverSubmitDownMain.ideaApproval.getValue());
+					}
 	            }
 			}
 		];
@@ -113,7 +118,11 @@ Ext.define('FHD.view.check.yearcheck.approver.YearCheckPlanApprover', {
 	},
 	submitForm:function (formulateApproverEdit,isPass,examineApproveIdea){
 	var me=this;
-	var approverId = formulateApproverEdit.items.items[0].value;
+	var approverId="";
+	if(""!=formulateApproverEdit){
+	approverId = formulateApproverEdit.items.items[0].value;
+	me.subWinhide(formulateApproverEdit);
+	}
 		me.body.mask("提交中...","x-mask-loading");
 		FHD.ajax({//ajax调用
 			url : __ctxPath+ '/check/yearcheck/yearCheckLeaderApproval.s',
@@ -127,7 +136,9 @@ Ext.define('FHD.view.check.yearcheck.approver.YearCheckPlanApprover', {
 			callback : function(data) {
 				me.body.unmask();
 				if(me.winId){
+					if(""!=formulateApproverEdit){
 					me.subWin_assess.hide();
+					}
 					Ext.getCmp(me.winId).close();
 				}else{
 					window.location.reload();

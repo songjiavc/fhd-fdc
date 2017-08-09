@@ -143,7 +143,7 @@ public class OrgRelaLeaderBO {
 	 * @desc    根据业务id和被管理部门id获取管理人员id和name
 	 * @return
 	 */
-	public List<Map<String,String>> findEmpIdsFromOrgRelaEmpByManagedIdAndBussinessId(String bussinessId,String managedId){
+	public List<Map<String,String>> findEmpIdsFromOrgRelaEmpByManagedIdAndBussinessId(String bussinessId,String managedId,String manageOrgId){
 		List<Map<String,String>> rtnList = new ArrayList<Map<String,String>>();
 		Map<String,String> tempMap = null;
 		//郭鹏添加查询结果 BussinessOrgRelaEmp.ID
@@ -154,6 +154,9 @@ public class OrgRelaLeaderBO {
 				if (null!=managedId) {
 					hqlQuery.append(" AND orgRelaEmp.managedOrgId.id =:managedId");
 				}
+				if (null!=manageOrgId) {
+					hqlQuery.append(" AND orgRelaEmp.manageOrgId.id =:manageOrgId");
+				}
 		Query query = o_BussinessOrgRelaEmpDAO.createQuery(hqlQuery.toString());
 		//郭鹏添加根据参数判断查询条件
 		if(null!=bussinessId)
@@ -162,6 +165,9 @@ public class OrgRelaLeaderBO {
 		}
 		if (null!=managedId) {
 			query.setParameter("managedId", managedId);
+		}
+		if (null!=manageOrgId) {
+			query.setParameter("manageOrgId", manageOrgId);
 		}
 		List<Object[]> list = query.list();
 		for (Object[] objects : list) {

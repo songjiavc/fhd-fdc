@@ -120,7 +120,7 @@
 					header : '考评项目',
 					dataIndex : 'projectName',
 					sortable : false,
-					flex : 2,
+					flex : 0.1,
 					editor : me.projectComboBox,
 					renderer: function(value,metadata,record){  
 						 
@@ -134,7 +134,7 @@
 					header : '考核内容',
 					dataIndex : 'commentName',
 					sortable : false,
-					flex : 2,
+					flex : 0.1,
 					editor : me.commentComboBox,
 					renderer: function(value,metadata,record){  
                             var index = commnetStore.find('id',value);  
@@ -147,7 +147,7 @@
 					header : '评分项',
 					dataIndex : 'name',
 					sortable : false,
-					flex : 2,
+					flex : 0.1,
 					editor : new Ext.form.field.Text({
 					allowBlank : false
 					})
@@ -155,7 +155,7 @@
 					header : '评分标准',
 					dataIndex : 'detailStandard',
 					sortable : false,
-					flex : 2,
+					flex : 0.6,
 					editor : new Ext.form.field.Text({
 					allowBlank : false
 					})
@@ -163,7 +163,7 @@
 					header : '分值',
 					dataIndex : 'detailScore',
 					sortable : true,
-					flex : 1,
+					flex : 0.1,
 					editor : new Ext.form.NumberField({
 								allowBlank : false
 							})
@@ -174,6 +174,9 @@
 			cols : cols,
 			url : __ctxPath + "/check/checkdetail/finCheckDetailAllPage.f",
 			clicksToEdit : 2,
+			border: false,
+		    checked : true,
+		    pagable : true,
 			tbarItems : [
 						{
 						btype : 'add',

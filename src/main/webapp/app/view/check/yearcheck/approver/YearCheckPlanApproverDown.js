@@ -29,8 +29,8 @@ Ext.define('FHD.view.check.yearcheck.approver.YearCheckPlanApproverDown', {
      	    },
      	    items : [ 	{xtype:'displayfield', fieldLabel : '计划名称', name:'name'},
 						{xtype:'displayfield', fieldLabel : '起止日期', name : 'beginendDateStr'},
-						{xtype:'displayfield', fieldLabel : '联系人', name : 'contactName'},
-						{xtype:'displayfield', fieldLabel : '负责人', name : 'responsName'}]
+						{xtype:'displayfield', fieldLabel : '联系人', name : 'cName'},
+						{xtype:'displayfield', fieldLabel : '负责人', name : 'rName'}]
         };
         
         me.downgrid = Ext.create('FHD.view.check.yearcheck.plan.YearCheckPlanNextGrid',{flex:1,margin:2,columnWidth :1});

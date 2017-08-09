@@ -49,6 +49,7 @@ public Page<CheckDetail> finCheckDetailAllPage(Page<CheckDetail> page, String qu
 @Transactional
 public boolean savaCheckDetail(String jsonArray) {
 	// TODO Auto-generated method stub
+
 	boolean t = true;
 	try {
 		jsonArray.replaceAll("\'", "\"");
@@ -65,7 +66,6 @@ public boolean savaCheckDetail(String jsonArray) {
 		t = false;
 	}
 	return t;
-
 }
 	/*
 	 * 删除考评细则
@@ -74,14 +74,21 @@ public boolean savaCheckDetail(String jsonArray) {
 	 */
 	@Transactional
 	public boolean deleteCheckDetail(String data) {
-		// TODO Auto-generated method stub
-		String ids[]=data.split(",");
-		for (int i = 0; i < ids.length; i++) {
-			CheckDetail checkDetail=new CheckDetail();
-			checkDetail.setId(ids[i]);	
-			checkDetailDAO.delete(checkDetail);
+		boolean t=true;
+		try {
+			String ids[]=data.split(",");
+			for (int i = 0; i < ids.length; i++) {
+				CheckDetail checkDetail=new CheckDetail();
+				checkDetail.setId(ids[i]);	
+				checkDetailDAO.delete(checkDetail);
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			t=false;
 		}
-		return false;
+		
+		return t;
 	}
 	/*
 	 * 查询考评规则是否合法
@@ -101,7 +108,15 @@ public boolean savaCheckDetail(String jsonArray) {
 		List<Object[]> list = sqlQuery.list();
         for (Iterator<Object[]> iterator = list.iterator(); iterator.hasNext();) {
         	Object[] objects = (Object[]) iterator.next();
-            if(objects[1]!=objects[2]){
+        	String totalScore="";
+        	String score="";
+        	if (null!=objects[1]) {
+			totalScore=objects[1].toString();
+			}
+        	if(null!=objects[2]) {
+        	 score=objects[2].toString();
+        	}
+            if(!totalScore.equals(score)){
             Map<String,Object> map=new HashMap<String,Object>();
             map.put("errorMes", objects[0]+"总分："+objects[1]+"&nbsp&nbsp实际分："+objects[2]);
             data.add(map);

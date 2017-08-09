@@ -23,7 +23,6 @@ Ext.define('FHD.view.check.yearcheck.approver.YearCheckPlanOwenMarkApprover', {
 	            }
 			}
 		];
-	  	
 	  	me.formulateApproverSubmitDownMain = Ext.create('FHD.view.check.yearcheck.approver.YearCheckPlanOwenMarkApproverDown',{
 	  		flex: 1,
 	  		businessId : me.businessId,
@@ -115,8 +114,9 @@ Ext.define('FHD.view.check.yearcheck.approver.YearCheckPlanOwenMarkApprover', {
 	var me=this;
 	var approverId = formulateApproverEdit.items.items[0].value;
 		me.body.mask("提交中...","x-mask-loading");
+		me.subWinhide(formulateApproverEdit);
 		FHD.ajax({//ajax调用
-			url : __ctxPath+ '/check/yearcheck/yearCheckLeaderApproval.s',
+			url : __ctxPath+ '/check/yearcheck/submOwenMarkForLeader.s',
 		    params : {
 		    	businessId:me.businessId,
 		    	executionId:me.executionId,

@@ -63,6 +63,7 @@ import com.fhd.ra.business.assess.email.TaskDistributionEmailBO;
 import com.fhd.ra.business.assess.kpiset.AssessTaskBO;
 import com.fhd.ra.business.assess.oper.CircuseeBO;
 import com.fhd.ra.business.assess.oper.DeptLeadCircuseeBO;
+import com.fhd.ra.business.assess.oper.PlanUserFreezeBO;
 import com.fhd.ra.business.assess.oper.RAssessPlanBO;
 import com.fhd.ra.business.assess.oper.RangObjectDeptEmpBO;
 import com.fhd.ra.business.assess.oper.ScoreDeptBO;
@@ -143,7 +144,7 @@ public class RiskScoreBO implements IRiskScoreBO{
 	private SysOrgDAO o_sysOrgDAO;
 	
 	@Autowired
-	private OrganizationBO o_organizationBO;
+	private PlanUserFreezeBO o_planUserFreezeBO;
 	
 	@Autowired
 	private RiskOrgBO o_riskOrgBO;
@@ -821,12 +822,11 @@ public class RiskScoreBO implements IRiskScoreBO{
 					variables.put("makePlanEmpId", makePlanEmpId);//计划制定人
 					//启动流程时将schm作为流程变量保存在流程实例中 2017年4月14日14:34:08 吉志强添加
 					variables.put("schm", assessPlan.getSchm());//计划制定人
-					
-					
 					executionId = o_jbpmBO.startProcessInstance(entityType,variables);//开启工作流
 					//工作流提交
 					Map<String, Object> variablesBpmTwo = new HashMap<String, Object>();
 					variablesBpmTwo.put("AssessPlanApproverEmpId", approver);
+					//
 					o_jbpmBO.doProcessInstance(executionId, variablesBpmTwo);
 				}else{
 					//工作流提交
@@ -856,6 +856,11 @@ public class RiskScoreBO implements IRiskScoreBO{
 			}
 			//保存审批人承办人
 			this.saveRiskCircuseeBysome(deptEmpId, approver, assessPlan, businessId);
+			//锁定计划中需要锁定人员
+			Map<String,String> userRole=new HashMap<String,String>();
+			userRole.put("approveFore", secrecyLeader.getSysUser().getId());
+			userRole.put("riskManagemer", emp.getSysUser().getId());
+			o_planUserFreezeBO.savePlanUserFreeze(assessPlan.getId(), userRole);
 		}
 		return true;
 		}

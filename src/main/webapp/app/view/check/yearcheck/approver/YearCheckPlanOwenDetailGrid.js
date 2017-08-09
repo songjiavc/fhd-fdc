@@ -3,7 +3,7 @@
  * Grid AUTHOR:Perry Guo 
  * Date:2017-08-01
  */
-Ext.define('FHD.view.check.yearcheck.mark.YearCheckPlanOwenDetailGrid', {
+Ext.define('FHD.view.check.yearcheck.approver.YearCheckPlanOwenDetailGrid', {
 	extend : 'FHD.ux.GridPanel',
 	alias : 'widget.yearCheckPlanOwenDetailGrid',
 	
@@ -56,7 +56,7 @@ Ext.define('FHD.view.check.yearcheck.mark.YearCheckPlanOwenDetailGrid', {
 			checked: false,
 		    pagable : false,
 		    searchable : true,
-		    autoScroll:true
+		    autoScroll:true,
 			clicksToEdit : 2
 			
 		})

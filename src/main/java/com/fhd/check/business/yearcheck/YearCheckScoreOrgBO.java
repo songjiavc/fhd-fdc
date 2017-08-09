@@ -54,6 +54,25 @@ public class YearCheckScoreOrgBO {
 		return list;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public List<YearCheckScoreOrg> findCheckRuleByOrgId(String businessId,String executionId) {
+		Criteria c=checkScoreOrgDAO.createCriteria();
+		c.createAlias("planOrgId", "planOrg",c.LEFT_JOIN);
+		c.createAlias("planOrg.yearCheckPlan", "plan",c.LEFT_JOIN);
+		c.createAlias("planOrg.orgId", "org",c.LEFT_JOIN);
+		if (StringUtils.isNotBlank(businessId)) {
+			c.add(Restrictions.eq("plan.id", businessId));
+		}
+		String orgId=o_jbpmBO.getVariable("orgId", executionId);
+			if (StringUtils.isNotBlank(orgId)) {
+				c.add(Restrictions.eq("org.id", orgId));
+			}
+		
+		c.addOrder(Order.desc("checkProjectName")).addOrder(Order.desc("checkCommenttName")).addOrder(Order.desc("checkDetailName"));
+		List<YearCheckScoreOrg> list=c.list();
+		return list;
+	}
+	
 	@Transactional
 	public void savaCheckScoreOrg(List<YearCheckScoreOrg> list,String data){
 		if (null!=list&&null==data) {
@@ -68,33 +87,37 @@ public class YearCheckScoreOrgBO {
 			JSONArray str = JSONArray.fromObject(data);
 			@SuppressWarnings("unchecked")
 			List<YearCheckScoreOrg> scoreOrgList = (List<YearCheckScoreOrg>) JSONArray.toCollection(str, YearCheckScoreOrg.class);
-			
 			for(YearCheckScoreOrg score:scoreOrgList)
 			{
 				YearCheckScoreOrg oldScore=checkScoreOrgDAO.get(score.getId());
 				oldScore.setOwenScore(score.getOwenScore());
+				oldScore.setAuditScore(score.getAuditScore());
+				oldScore.setRiskScore(score.getRiskScore());
 				checkScoreOrgDAO.merge(oldScore);
 			}
 		}
 		
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<Map<String,Object>> findCheckGroupByOrg(String executionId, String businessId,boolean isAll) {
 		StringBuffer sql=new StringBuffer();
-		sql.append("SELECT org.ORG_NAME,org.ID,SUM(yso.OWEN_SCORE),SUM(yso.RISK_SCORE),SUM(yso.AUDIT_SCORE) FROM t_rm_check_year_score_org yso");
-		sql.append("LEFT JOIN t_rm_check_year_plan_org plan ON plan.ID = yso.PLAN_ORG_ID");
-		sql.append("LEFT JOIN t_sys_organization org ON plan.ORG_ID = org.ID;");
+		sql.append("SELECT org.ORG_NAME,org.ID,SUM(yso.OWEN_SCORE),SUM(yso.RISK_SCORE),SUM(yso.AUDIT_SCORE),yso.id FROM t_rm_check_year_score_org yso");
+		sql.append(" LEFT JOIN t_rm_check_year_plan_org plan ON plan.ID = yso.PLAN_ORG_ID");
+		sql.append(" LEFT JOIN t_sys_organization org ON plan.ORG_ID = org.ID");
 		String orgID = o_jbpmBO.getVariable("orgId", executionId);
 		String empID = o_jbpmBO.getVariable("empId", executionId);
 		String empName = o_jbpmBO.getVariable("empName", executionId);
+		sql.append(" WHERE plan.plan_id = :planId");
 		if (!isAll) {
-		sql.append("WHERE org.id = :orgId");
+		sql.append(" AND org.id = :orgId");
 		}
-		sql.append("GROUP BY org.id");
+		sql.append(" GROUP BY org.id");
 		SQLQuery sqlquery=checkScoreOrgDAO.createSQLQuery(sql.toString());
 		if (!isAll) {
 		sqlquery.setParameter("orgId", orgID);
 		}
+		sqlquery.setParameter("planId", businessId);
 		List<Object[]> list=sqlquery.list();
 		List<Map<String,Object>> data=new ArrayList<Map<String,Object>>();
 		  for (Iterator<Object[]> iterator = list.iterator(); iterator.hasNext();) {
@@ -119,6 +142,10 @@ public class YearCheckScoreOrgBO {
 			  if(null!=objects[4])
 			  {
 				  map.put("auditScore", objects[4]) ;
+			  }
+			  if(null!=objects[5])
+			  {
+				  map.put("id", objects[5]) ;
 			  }
 			  if(!isAll){
 				  map.put("empId", empID);

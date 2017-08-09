@@ -17,40 +17,59 @@ Ext.define('FHD.view.check.yearcheck.mark.YearCheckOwenMarkGrid', {
 					header : '考评项目',
 					dataIndex : 'checkProjectName',
 					sortable : false,
-					flex : 2
+					flex : 0.1
 				}, {
 					header : '总分',
 					dataIndex : 'checkProjectScore',
 					sortable : false,
-					flex : 2
+					flex : 0.05
 				},{
 					header : '考评内容',
 					dataIndex : 'checkCommenttName',
 					sortable : false,
-					flex : 2
+					flex : 0.1
 				},{
 					header : '评分项目',
 					dataIndex : 'checkDetailName',
 					sortable : false,
-					flex : 2
+					flex : 0.1
 				},{
 					header : '评分标准',
 					dataIndex : 'checkDetailDescribe',
 					sortable : false,
-					flex : 2
+					flex : 0.4
 				},{
 					header : '标准分',
 					dataIndex : 'checkDetailScore',
 					sortable : false,
-					flex : 2
+					flex : 0.05
+				},{
+					dataIndex : 'auditScore',
+					sortable : false,
+					hidden : true
+				},{
+					dataIndex : 'riskScore',
+					sortable : false,
+					hidden : true
+				},{
+					dataIndex : 'maxScore',
+					sortable : false,
+					hidden : true
 				},{
 					header : '自评评分',
 					dataIndex : 'owenScore',
 					sortable : false,
-					flex : 1,
+					flex : 0.05,
 					editor : new Ext.form.NumberField({
-								allowBlank : false
+								allowBlank : false,
+						listeners:{focus:function(editor){
+							var sm = me.getSelectionModel();
+							var obj=sm.getSelection()
+							editor.minValue = 0;
+                  			editor.maxValue = obj[0].data.maxScore;
+                }}
 							})
+	
 				}];
 
 		Ext.apply(me, {
@@ -60,8 +79,9 @@ Ext.define('FHD.view.check.yearcheck.mark.YearCheckOwenMarkGrid', {
 		    pagable : false,
 		    searchable : true,
 		    autoScroll:true,
-			url : __ctxPath + "/check/yearcheck/findCheckRuleByEmpMap.f",
-			clicksToEdit : 2
+		    height:360,
+			url : __ctxPath + "/check/yearcheck/findCheckRuleByEmpMap.f?businessId="+me.businessId+"&executionId="+me.executionId,
+			clicksToEdit : 1
 			
 		})
 		me.callParent(arguments);

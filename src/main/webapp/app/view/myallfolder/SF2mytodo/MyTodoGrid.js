@@ -18,10 +18,11 @@ Ext.define('FHD.view.myallfolder.SF2mytodo.MyTodoGrid',{
 	},
     
     execute : function (grid, ele, rowIndex){
-    	
+
     	var jEle=jQuery(ele);
     	var me = this.up('panel');
 		var winId = "win" + Math.random()+"$ewin";
+		var sss=jEle.find("[name='url']").val();
 		var taskPanel = Ext.create(jEle.find("[name='url']").val(),{
 			executionId : jEle.find("[name='executionId']").val(),
 			businessId : jEle.find("[name='businessId']").val(),
@@ -29,6 +30,7 @@ Ext.define('FHD.view.myallfolder.SF2mytodo.MyTodoGrid',{
 			typeId :jEle.find("[name='schm']").val(),
 			schm :jEle.find("[name='schm']").val()
 		});
+			
 //		console.log("吉志强在测试MyTodoGrid 30行")
 //		console.log("winId:="+winId);
 //		console.log("executionId:="+jEle.find("[name='executionId']").val());

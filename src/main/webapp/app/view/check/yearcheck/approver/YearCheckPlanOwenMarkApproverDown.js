@@ -1,6 +1,6 @@
 /**
  * 
- * 计划制定表单(审批)
+ * 自评审批表单
  */
 
 Ext.define('FHD.view.check.yearcheck.approver.YearCheckPlanOwenMarkApproverDown', {
@@ -27,13 +27,32 @@ Ext.define('FHD.view.check.yearcheck.approver.YearCheckPlanOwenMarkApproverDown'
             layout: {
      	        type: 'column'
      	    },
-     	    items : [ 	{xtype:'displayfield', fieldLabel : '计划名称', name:'name'},
-						{xtype:'displayfield', fieldLabel : '起止日期', name : 'beginendDateStr'},
-						{xtype:'displayfield', fieldLabel : '联系人', name : 'contactName'},
-						{xtype:'displayfield', fieldLabel : '负责人', name : 'responsName'}]
-        };
+     	    items : [{
+								xtype : 'displayfield',
+								fieldLabel : '计划名称',
+								name : 'name'
+							}, {
+								xtype : 'displayfield',
+								fieldLabel : '起止日期',
+								name : 'beginendDateStr'
+							}, {
+								xtype : 'displayfield',
+								fieldLabel : '联系人',
+								name : 'cName'
+							}, {
+								xtype : 'displayfield',
+								fieldLabel : '负责人',
+								name : 'rName'
+							}]
+				};
         
-        me.downgrid = Ext.create('FHD.view.check.yearcheck.plan.YearCheckPlanOwenMarkOneGrid',{flex:1,margin:2,columnWidth :1});
+        me.downgrid = Ext.create('FHD.view.check.yearcheck.approver.YearCheckPlanOwenMarkOneGrid',{
+        flex:1,
+        margin:2,
+        columnWidth :1,
+        businessId:me.businessId,
+        executionId: me.executionId
+        });
         me.downgrid.store.proxy.url = __ctxPath + '/check/yearcheck/findCheckGroupByOrg.f';
 	    me.downgrid.store.proxy.extraParams.businessId = me.businessId;
 	    me.downgrid.store.proxy.extraParams.executionId = me.executionId;

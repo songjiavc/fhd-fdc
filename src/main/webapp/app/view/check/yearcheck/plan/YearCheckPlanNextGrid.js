@@ -20,11 +20,15 @@ Ext.define('FHD.view.check.yearcheck.plan.YearCheckPlanNextGrid',{
 			},
 			callback : function(data){
 				me.body.unmask();
+				if(me.executionId){
+				Ext.getCmp(me.winId).close();
+				}else{
 				var prt = me.up('yearcheckcard');
 				prt.yearCheckPlanGrid.store.load();
 				//取消列表已选中的列，解决提交后未刷新的重复修改问题
 				prt.yearCheckPlanGrid.getSelectionModel().deselectAll(true);
 	    		prt.showPlanConformGrid();
+				}
 			}
 		});
     },
@@ -59,7 +63,7 @@ Ext.define('FHD.view.check.yearcheck.plan.YearCheckPlanNextGrid',{
 		    columnLines: true,
 		    checked: false,
 		    pagable : false,
-		    searchable : true,
+		    searchable : false,
 		    autoScroll:true
         });
                    

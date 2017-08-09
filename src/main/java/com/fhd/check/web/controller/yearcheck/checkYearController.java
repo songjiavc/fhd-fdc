@@ -1,6 +1,8 @@
 package com.fhd.check.web.controller.yearcheck;
 
 import java.io.PrintWriter;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,6 +24,7 @@ import com.fhd.check.business.yearcheck.YearCheckScoreOrgBO;
 import com.fhd.core.dao.Page;
 import com.fhd.entity.check.checkdetail.CheckDetail;
 import com.fhd.entity.check.yearcheck.plan.YearCheckPlan;
+import com.fhd.entity.check.yearcheck.plan.YearCheckPlanForm;
 import com.fhd.entity.check.yearcheck.plan.YearCheckPlanOrg;
 import com.fhd.entity.check.yearcheck.plan.YearCheckPlanOrgForm;
 import com.fhd.entity.check.yearcheck.plan.YearCheckScoreOrg;
@@ -38,7 +41,7 @@ public class checkYearController {
 	@Autowired
 	private YearCheckScoreOrgBO yearCheckScoreOrgBO;
 	
-	/*
+	/**
 	 * 分页查询所有年度考核
 	 * AUTHOR：Perry Guo
 	 * DATE:2017-07-30
@@ -51,24 +54,10 @@ public class checkYearController {
 		page.setPageSize(limit);
 		page = yearCheckBO.findAllPlanTypesGridPage(query, page,status);
 		List<YearCheckPlan> entityList = page.getResult();
-		List<YearCheckPlan> datas = new ArrayList<YearCheckPlan>();
+		List<YearCheckPlanForm> datas = new ArrayList<YearCheckPlanForm>();
 		for(YearCheckPlan plan : entityList){
-			if (null!=plan.getContactPerson()) {
-				plan.setContactName(plan.getContactPerson().getEmpname());
-				plan.setContactPerson(null);
 			
-			}
-			if (null!=plan.getResponsiblePerson()) {
-				plan.setResponsName(plan.getResponsiblePerson().getEmpname());
-				plan.setResponsiblePerson(null);
-			}
-			if (null!=plan.getBeginDate()) {
-				plan.setBeginDateStr(new SimpleDateFormat("yyyy-MM-dd").format(plan.getBeginDate()));
-			}
-			if (null!=plan.getEndDate()) {
-				plan.setEndDateStr(new SimpleDateFormat("yyyy-MM-dd").format(plan.getEndDate()));
-			}
-			datas.add(plan);
+			datas.add(new YearCheckPlanForm(plan));
 		}
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		map.put("totalCount", page.getTotalItems());
@@ -125,7 +114,7 @@ public class checkYearController {
 		return orgFormList ;
 	}
 	
-	/*
+	/**
 	 * 提交考核计划
 	 * AUTHOR：Perry Guo
 	 * DATE:2017-07-30
@@ -136,6 +125,19 @@ public class checkYearController {
 			String executionId){
 		
 		return yearCheckBO.submitAssessRiskPlanToApproverSecrecy(approverId, businessId, executionId);
+	}
+	
+	/**
+	 * 提交考核计划
+	 * AUTHOR：Perry Guo
+	 * DATE:2017-07-30
+	 * */
+	@ResponseBody
+	@RequestMapping(value = "/check/yearcheck/checkYearCheckPlan.f")
+	public Map<String, Object> checkYearCheckPlan(String approverId, String businessId, 
+			String executionId){
+		
+		return yearCheckBO.checkYearCheckPlan(approverId, businessId, executionId);
 	}
 	
 	/**
@@ -165,7 +167,7 @@ public class checkYearController {
 		}
 	}
 	/**
-	 * 计划提交主管领导审批
+	 * 计划提交负责人审批
 	 * @param executionId	工作流id
 	 * @param businessId	计划id
 	 * @param isPass		是否通过：yes/no
@@ -225,6 +227,7 @@ public class checkYearController {
 		map.put("checkDetailName", scoreOrg.getCheckDetailName());
 		map.put("checkDetailDescribe", scoreOrg.getCheckDetailDescribe());
 		map.put("checkDetailScore", scoreOrg.getCheckDetailScore());
+		map.put("maxScore", scoreOrg.getCheckDetailScore()-scoreOrg.getCheckDetailAutoSub());
 		data.add(map);
 		}
 		return data;
@@ -239,7 +242,7 @@ public class checkYearController {
 	@RequestMapping("/check/yearcheck/findCheckRuleByEmpId.f")
 	@ResponseBody
 	public List<Map<String, Object>> findCheckRuleByEmpId(String executionId, String businessId,String orgId) {
-		List<YearCheckScoreOrg> scoreList=yearCheckScoreOrgBO.findCheckRuleByEmp(businessId,orgId);
+		List<YearCheckScoreOrg> scoreList=yearCheckScoreOrgBO.findCheckRuleByEmp(businessId, orgId);
 		List<Map<String,Object>> data=new ArrayList<Map<String,Object>>();
 		for(YearCheckScoreOrg scoreOrg:scoreList){
 		Map<String,Object> map= new HashMap<String, Object>();
@@ -253,6 +256,37 @@ public class checkYearController {
 		map.put("owenScore", scoreOrg.getOwenScore());
 		map.put("riskScore", scoreOrg.getRiskScore());
 		map.put("auditScore", scoreOrg.getAuditScore());
+		map.put("maxScore", scoreOrg.getCheckDetailScore()-scoreOrg.getCheckDetailAutoSub());
+		data.add(map);
+		}
+		return data;
+	}
+	
+	/**
+	 * 根据OrgId查询打分表Map
+	 * @param executionId	工作流id
+	 * @param businessId	计划id
+	 * @return 
+	 */
+	@RequestMapping("/check/yearcheck/findCheckRuleByOrgId.f")
+	@ResponseBody
+	public List<Map<String, Object>> findCheckRuleByOrgId(String executionId, String businessId) {
+		List<YearCheckScoreOrg> scoreList=yearCheckScoreOrgBO.findCheckRuleByOrgId(businessId,executionId);
+		List<Map<String,Object>> data=new ArrayList<Map<String,Object>>();
+		for(YearCheckScoreOrg scoreOrg:scoreList){
+		Map<String,Object> map= new HashMap<String, Object>();
+		map.put("id", scoreOrg.getId());
+		map.put("checkProjectName", scoreOrg.getCheckProjectName());
+		map.put("checkProjectScore", scoreOrg.getCheckProjectScore());
+		map.put("checkCommenttName", scoreOrg.getCheckCommenttName());
+		map.put("checkDetailName", scoreOrg.getCheckDetailName());
+		map.put("checkDetailDescribe", scoreOrg.getCheckDetailDescribe());
+		map.put("checkDetailScore", scoreOrg.getCheckDetailScore());
+		map.put("owenScore", scoreOrg.getOwenScore());
+		map.put("riskScore", scoreOrg.getRiskScore());
+		map.put("auditScore", scoreOrg.getAuditScore());
+		map.put("Score", scoreOrg.getAuditScore());
+		map.put("maxScore", scoreOrg.getCheckDetailScore()-scoreOrg.getCheckDetailAutoSub());
 		data.add(map);
 		}
 		return data;
@@ -268,14 +302,106 @@ public class checkYearController {
 	 */
 	@RequestMapping("/check/yearcheck/subOwenMark.f")
 	@ResponseBody
-	public void subOwenMark(String executionId,String businessId,String approverId,String data) {
+	public void subOwenMark(String executionId,String businessId,String approverId,String data,HttpServletResponse response) {
 		
-		yearCheckScoreOrgBO.savaCheckScoreOrg(null, data);
 		
-		yearCheckBO.submitOwenMark(executionId, businessId,approverId);
-		
+		PrintWriter out = null;
+		try {
+			out = response.getWriter();
+			yearCheckScoreOrgBO.savaCheckScoreOrg(null, data);
+			yearCheckBO.submitOwenMark(executionId, businessId,approverId);
+			out.write("true");
+		} catch (Exception e) {
+			e.printStackTrace();
+			out.write("false");
+		} finally {
+			if (null != out) {
+				out.close();
+			}
+		}	
 	}
 	
+	/**
+	 * 风险办评分提交
+	 * @param executionId	工作流id
+	 * @param businessId	计划id
+	 * @param approverId	审批人id
+	 * @param data	          打分信息
+	 * @return void
+	 */
+	@RequestMapping("/check/yearcheck/subRiskMark.f")
+	@ResponseBody
+	public void subRiskMark(String executionId,String businessId,String data,HttpServletResponse response) {
+		
+		
+		PrintWriter out = null;
+		try {
+			out = response.getWriter();
+			yearCheckScoreOrgBO.savaCheckScoreOrg(null, data);
+			yearCheckBO.submitRiskMark(executionId, businessId);
+			out.write("true");
+		} catch (Exception e) {
+			e.printStackTrace();
+			out.write("false");
+		} finally {
+			if (null != out) {
+				out.close();
+			}
+		}	
+	}
+	/**
+	 * 自评提交负责人领导审批
+	 * @param executionId	工作流id
+	 * @param businessId	计划id
+	 * @param isPass		是否通过：yes/no
+	 * @param examineApproveIdea	审批意见
+	 * @param approverId    主管领导ID
+	 * @param response
+	 */
+	@RequestMapping("/check/yearcheck/submOwenMarkForLeader.s")
+	public void submOwenMarkForLeader(
+			String executionId, String businessId, String isPass, String examineApproveIdea,String approverId ,HttpServletResponse response) {
+		PrintWriter out = null;
+		try {
+			out = response.getWriter();
+			yearCheckBO.submOwenMarkForLeader(executionId, businessId, isPass, examineApproveIdea,approverId);
+			out.write("true");
+		} catch (Exception e) {
+			e.printStackTrace();
+			out.write("false");
+		} finally {
+			if (null != out) {
+				out.close();
+			}
+		}
+	}
+	
+	/**
+	 * 自评提交负责人领导审批
+	 * @param executionId	工作流id
+	 * @param businessId	计划id
+	 * @param isPass		是否通过：yes/no
+	 * @param examineApproveIdea	审批意见
+	 * @param approverId    主管领导ID
+	 * @param response
+	 */
+	@RequestMapping("/check/yearcheck/submOwenMarkForCharge.s")
+	public void submOwenMarkForCharge(
+			String executionId, String businessId, String isPass,HttpServletResponse response) {
+		PrintWriter out = null;
+		try {
+			out = response.getWriter();
+			yearCheckBO.submOwenMarkForCharge(executionId, businessId, isPass);
+			out.write("true");
+		} catch (Exception e) {
+			e.printStackTrace();
+			out.write("false");
+		} finally {
+			if (null != out) {
+				out.close();
+			}
+		}
+	}
 	/**
 	 * 查询所有评分单位
 	 * @param executionId	工作流id
@@ -286,10 +412,248 @@ public class checkYearController {
 	@ResponseBody
 	public List<Map<String,Object>> findCheckGroupByOrg(String executionId,String businessId,boolean isAll) {
 		
-		
 		return yearCheckScoreOrgBO.findCheckGroupByOrg(executionId,businessId,isAll);
 	}
 	
+	/**
+	 * 分数汇总
+	 * @param executionId	工作流id
+	 * @param businessId	计划id
+	 * @return 
+	 */
+	@RequestMapping("/check/yearcheck/findCheckScoreGroup.f")
+	@ResponseBody
+	public List<Map<String,Object>> findCheckScoreGroup(String executionId,String businessId) {
+		List<Map<String,Object>>  list=yearCheckScoreOrgBO.findCheckGroupByOrg(executionId,businessId,true);
+		for (int i = 0; i < list.size(); i++) {
+			Map<String,Object> map=list.get(i);
+			BigDecimal owenScore=(BigDecimal) list.get(i).get("owenScore"); 
+			BigDecimal riskScore=(BigDecimal) list.get(i).get("riskScore"); 
+			BigDecimal auditScore=(BigDecimal) list.get(i).get("auditScore"); 
+			//TODO 公式设置
+			Double finalScore= 0.2*owenScore.doubleValue()+0.5*riskScore.doubleValue()+0.3*auditScore.doubleValue();
+			map.put("finalScore",new DecimalFormat("#.00").format(finalScore));
+		}
+		return  list;
+	}
+	
+	/**
+	 * 审计处评分提交
+	 * @param executionId	工作流id
+	 * @param businessId	计划id
+	 * @param approverId	审批人id
+	 * @param data	          打分信息
+	 * @return void
+	 */
+	@RequestMapping("/check/yearcheck/submitAuditMark.f")
+	@ResponseBody
+	public void submitAuditMark(String executionId,String businessId,String approverId,String data,HttpServletResponse response) {
+		
+		
+		PrintWriter out = null;
+		try {
+			out = response.getWriter();
+			yearCheckScoreOrgBO.savaCheckScoreOrg(null, data);
+			yearCheckBO.submitAuditMark(executionId, businessId,approverId);
+			out.write("true");
+		} catch (Exception e) {
+			e.printStackTrace();
+			out.write("false");
+		} finally {
+			if (null != out) {
+				out.close();
+			}
+		}
+		
+	}
+	
+	/**
+	 * 逐个部门修改得分
+	 * @param executionId	工作流id
+	 * @param businessId	计划id
+	 * @param approverId	审批人id
+	 * @param data	                      打分信息
+	 * @return void
+	 */
+	@RequestMapping("/check/yearcheck/savaMarkInfo.s")
+	@ResponseBody
+	public void savaMarkInfo(String executionId,String businessId,String approverId,String data,HttpServletResponse response) {
+		
+		PrintWriter out = null;
+		try {
+			out = response.getWriter();
+			yearCheckScoreOrgBO.savaCheckScoreOrg(null, data);
+			out.write("true");
+		} catch (Exception e) {
+			e.printStackTrace();
+			out.write("false");
+		} finally {
+			if (null != out) {
+				out.close();
+			}
+		}
+		
+	}
+	/**
+	 * 审计处提交领导审批
+	 * @param executionId	工作流id
+	 * @param businessId	计划id
+	 * @param isPass		是否通过：yes/no
+	 * @param examineApproveIdea	审批意见
+	 * @param approverId    主管领导ID
+	 * @param response
+	 */
+	@RequestMapping("/check/yearcheck/submAuditMarkForLeader.s")
+	public void submAuditMarkForLeader(
+			String executionId, String businessId, String isPass, String examineApproveIdea,String approverId ,HttpServletResponse response) {
+		PrintWriter out = null;
+		try {
+			out = response.getWriter();
+			yearCheckBO.submAuditMarkForLeader(executionId, businessId, isPass, examineApproveIdea,approverId);
+			out.write("true");
+		} catch (Exception e) {
+			e.printStackTrace();
+			out.write("false");
+		} finally {
+			if (null != out) {
+				out.close();
+			}
+		}
+	}
+	
+	/**
+	 * 审计处提交领导审批
+	 * @param executionId	工作流id
+	 * @param businessId	计划id
+	 * @param isPass		是否通过：yes/no
+	 * @param examineApproveIdea	审批意见
+	 * @param approverId    主管领导ID
+	 * @param response
+	 */
+	@RequestMapping("/check/yearcheck/submAuditMarkForCharge.s")
+	public void submAuditMarkForCharge(
+			String executionId, String businessId, String isPass, String examineApproveIdea,String approverId ,HttpServletResponse response) {
+		PrintWriter out = null;
+		try {
+			out = response.getWriter();
+			yearCheckBO.submAuditMarkForCharge(executionId, businessId, isPass, examineApproveIdea);
+			out.write("true");
+		} catch (Exception e) {
+			e.printStackTrace();
+			out.write("false");
+		} finally {
+			if (null != out) {
+				out.close();
+			}
+		}
+	}
+	
+	/**
+	 * 汇总提交领导审批
+	 * @param executionId	工作流id
+	 * @param businessId	计划id
+	 * @param isPass		是否通过：yes/no
+	 * @param examineApproveIdea	审批意见
+	 * @param approverId    主管领导ID
+	 * @param response
+	 */
+	@RequestMapping("/check/yearcheck/submTidyMark.s")
+	public void submTidyMark(
+			String executionId, String businessId, String isPass, String examineApproveIdea,String approverId ,HttpServletResponse response) {
+		PrintWriter out = null;
+		try {
+			out = response.getWriter();
+			yearCheckBO.submTidyMark(executionId, businessId, isPass, examineApproveIdea,approverId);
+			out.write("true");
+		} catch (Exception e) {
+			e.printStackTrace();
+			out.write("false");
+		} finally {
+			if (null != out) {
+				out.close();
+			}
+		}
+	}
+	
+	/**
+	 * 汇总提交负责人审批
+	 * @param executionId	工作流id
+	 * @param businessId	计划id
+	 * @param isPass		是否通过：yes/no
+	 * @param examineApproveIdea	审批意见
+	 * @param approverId    主管领导ID
+	 * @param response
+	 */
+	@RequestMapping("/check/yearcheck/submTidyMarkForLeader.s")
+	public void submTidyMarkforLeader(
+			String executionId, String businessId, String isPass, String examineApproveIdea,String approverId ,HttpServletResponse response) {
+		PrintWriter out = null;
+		try {
+			out = response.getWriter();
+			yearCheckBO.submTidyMarkforLeader(executionId, businessId, isPass, examineApproveIdea,approverId);
+			out.write("true");
+		} catch (Exception e) {
+			e.printStackTrace();
+			out.write("false");
+		} finally {
+			if (null != out) {
+				out.close();
+			}
+		}
+	}
+	/**
+	 * 汇总提交集团副总审批
+	 * @param executionId	工作流id
+	 * @param businessId	计划id
+	 * @param isPass		是否通过：yes/no
+	 * @param examineApproveIdea	审批意见
+	 * @param approverId    主管领导ID
+	 * @param response
+	 */
+	@RequestMapping("/check/yearcheck/submTidyMarkforCharge.s")
+	public void submTidyMarkforCharge(
+			String executionId, String businessId, String isPass, String examineApproveIdea,String approverId ,HttpServletResponse response) {
+		PrintWriter out = null;
+		try {
+			out = response.getWriter();
+			yearCheckBO.submTidyMarkforCharge(executionId, businessId, isPass, examineApproveIdea,approverId);
+			out.write("true");
+		} catch (Exception e) {
+			e.printStackTrace();
+			out.write("false");
+		} finally {
+			if (null != out) {
+				out.close();
+			}
+		}
+	}
+	
+	/**
+	 * 汇总提交集团副总审批
+	 * @param executionId	工作流id
+	 * @param businessId	计划id
+	 * @param isPass		是否通过：yes/no
+	 * @param examineApproveIdea	审批意见
+	 * @param approverId    主管领导ID
+	 * @param response
+	 */
+	@RequestMapping("/check/yearcheck/submTidyMarkforPresident.s")
+	public void submTidyMarkforPresident(
+			String executionId, String businessId, String isPass, String examineApproveIdea,String approverId ,HttpServletResponse response) {
+		PrintWriter out = null;
+		try {
+			out = response.getWriter();
+			yearCheckBO.submTidyMarkforPresident(executionId, businessId, isPass, examineApproveIdea,approverId);
+			out.write("true");
+		} catch (Exception e) {
+			e.printStackTrace();
+			out.write("false");
+		} finally {
+			if (null != out) {
+				out.close();
+			}
+		}
+	}
 	
 	public void autoInsertScoreOrg(String businessId){
 		

@@ -162,7 +162,6 @@
 												var jsonStr="["
 												var json="";
 												Ext.each(modified, function(m) {
-													debugger;
 													var id=m.data.id;
 													var name=m.data.name;
 													var commentOrder=m.data.commentOrder;

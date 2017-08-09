@@ -34,17 +34,20 @@
 							}, {
 								xtype : 'displayfield',
 								fieldLabel : '联系人',
-								name : 'contactName'
+								name : 'cName'
 							}, {
 								xtype : 'displayfield',
 								fieldLabel : '负责人',
-								name : 'responsName'
+								name : 'rName'
 							}]
 				};
 		me.yearCheckOwenMarkGrid=Ext.create('FHD.view.check.yearcheck.mark.YearCheckOwenMarkGrid',{
 				flex:1,
 				margin:2,
-				columnWidth :1
+				columnWidth :1,
+				businessId : me.businessId,
+				executionId : me.executionId
+				
 		})		
 				
 		me.fieldSet2 = Ext.create('Ext.form.FieldSet',{

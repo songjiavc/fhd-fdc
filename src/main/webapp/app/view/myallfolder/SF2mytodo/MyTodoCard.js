@@ -2,7 +2,10 @@ Ext.define('FHD.view.myallfolder.SF2mytodo.MyTodoCard',{
     extend: 'FHD.ux.CardPanel',
     alias: 'widget.mytodocard',
 
-
+	 showMyTodoGrid : function(){
+		var me = this;
+		me.getLayout().setActiveItem(me.myTodoGrid);
+	 },     
     initComponent: function () {
         var me = this;
         //我的待办列表

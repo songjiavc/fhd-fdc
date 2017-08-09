@@ -5,9 +5,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-
 import org.hibernate.Criteria;
 import org.hibernate.SQLQuery;
 import org.hibernate.criterion.Restrictions;
@@ -15,18 +12,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fhd.core.utils.Identities;
 import com.fhd.dao.assess.quaAssess.EditIdeaDAO;
-import com.fhd.dao.assess.quaAssess.ResponseIdeaDAO;
+import com.fhd.dao.assess.quaAssess.ResponseIdeaDao;
 import com.fhd.dao.assess.quaAssess.ScoreResultDAO;
+import com.fhd.dao.risk.ScoreDAO;
 import com.fhd.entity.assess.kpiSet.RangObjectDeptEmp;
 import com.fhd.entity.assess.quaAssess.EditIdea;
 import com.fhd.entity.assess.quaAssess.ResponseIdea;
 import com.fhd.entity.assess.quaAssess.ScoreResult;
-import com.fhd.core.utils.Identities;
-import com.fhd.dao.risk.ScoreDAO;
 import com.fhd.entity.risk.Dimension;
 import com.fhd.entity.risk.Score;
 import com.fhd.ra.business.assess.oper.ScoreResultBO;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 @Service
 public class SaveAssessBO {
@@ -41,7 +41,7 @@ public class SaveAssessBO {
 	private EditIdeaDAO o_editIdeaDAO;
 	
 	@Autowired
-	private ResponseIdeaDAO o_responseIdeaDAO;
+	private ResponseIdeaDao o_responseIdeaDAO;
 	@Autowired
 	private ScoreResultBO o_scoreResultBO;
 	

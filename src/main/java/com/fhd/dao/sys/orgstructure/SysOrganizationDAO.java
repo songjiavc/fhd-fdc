@@ -65,7 +65,20 @@ public class SysOrganizationDAO extends HibernateEntityDao<SysOrganization> {
 		return getSession().createSQLQuery(sql.toString()).list();
 		
 	}
+	/**
+	 * 根据部门ID查询本部门和所有子部门
+	 * @author 陈建毅
+	 * @since fhd　Ver 1.1
+	 */
+	public List<String> queryOrgByName(String name){
+		StringBuilder sql = new StringBuilder("select org.id  from  t_sys_organization  org  where ");
 
+		if(StringUtils.isNotBlank(name)){
+			sql.append("org.ORG_NAME like '%").append(name).append("%'  ");
+		}
+		return getSession().createSQLQuery(sql.toString()).list();
+		
+	}
 	
 }
 

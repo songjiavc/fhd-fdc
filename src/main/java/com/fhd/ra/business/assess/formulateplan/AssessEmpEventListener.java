@@ -35,7 +35,6 @@ public class AssessEmpEventListener implements EventListener{
 		String assessPlanId = eventListener.getVariable("id").toString();//计划id
 		
 		ArrayList<String> empList = o_scoreObjectBO.findRangObjectDeptEmpEmpIdListByPlanIdAndDeptId(assessPlanId, deptId);
-		System.out.println("aaa");
 		List<RiskAssessPlanTakerObject> assessPlanTakerList =  new ArrayList<RiskAssessPlanTakerObject>();
 		for (String empId : empList) {
 			RiskAssessPlanTakerObject assessPlanTaker = new RiskAssessPlanTakerObject();
